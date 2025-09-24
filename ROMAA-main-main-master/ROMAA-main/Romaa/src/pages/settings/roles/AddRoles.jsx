@@ -10,6 +10,7 @@ const AddRoles = () => {
   const [createdBy, setCreatedBy] = useState("System");
   const [selectedSettings, setSelectedSettings] = useState({});
   const [permissions, setPermissions] = useState({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const settingsOptions = [
@@ -86,8 +87,7 @@ const AddRoles = () => {
         permissions: perms,
       })
     );
- 
-    
+
     const roleAccessLevel = {
       role_name: roleName,
       accessLevels,
@@ -96,7 +96,13 @@ const AddRoles = () => {
     };
 
     console.log("Sending payload:", roleAccessLevel);
+      if (!roleName.trim()) {
+    // ✅ Show error if empty
+    toast.error("Role name cannot be empty");
+    return;
+  }
     try {
+      setLoading(true);
       const response = await axios.post(
         `${API}/role/addrole`,
         roleAccessLevel,
@@ -109,9 +115,11 @@ const AddRoles = () => {
       } else {
         console.error("Error in posting data", response);
         toast.error("Failed to Upload");
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error in posting data", error);
+      setLoading(false);
     }
 
     // console.log(
@@ -135,12 +143,15 @@ const AddRoles = () => {
           >
             Cancel
           </p>
-          <p
+          <button
+            disabled={loading}
             onClick={handleSave}
-            className="bg-darkest-blue text-white px-8 py-2 rounded-sm"
+            className={`cursor-pointer px-6 text-white rounded ${
+              loading ? "bg-gray-500 cursor-not-allowed" : "bg-darkest-blue"
+            }`}
           >
-            Save
-          </p>
+            {loading ? "Saving..." : "Save"}
+          </button>
         </div>
       </div>
       <div className="flex items-center  gap-10 mb-4">

@@ -21,6 +21,8 @@ import axios from "axios";
 import { API } from "../../../../constant";
 import Penalities from "./Penalties/Penalities";
 import Bid from "./bid/Bid";
+import Loader from "../../../../components/Loader";
+import { set } from "date-fns";
 
 const tabs = [
   {
@@ -58,7 +60,7 @@ const tabs = [
   {
     id: "3",
     label: "Bid",
-    component:<Bid />,
+    component: <Bid />,
     buttons: [
       // {
       //   label: "Export",
@@ -94,7 +96,7 @@ const tabs = [
   {
     id: "5",
     label: "Zero Cost",
-    component: <ZeroCost/>,
+    component: <ZeroCost />,
     buttons: [
       // {
       //   label: "Add Zero Cost",
@@ -173,7 +175,7 @@ const tabs = [
       },
     ],
   },
-    {
+  {
     id: "9",
     label: "Penalties",
     component: <Penalities />,
@@ -186,8 +188,6 @@ const tabs = [
       },
     ],
   },
-  
- 
 ];
 // const tenderBreadcrumb = [{ label: "Tender", to: ".." }];
 // const tabBreadcrumbs = {
@@ -209,16 +209,18 @@ const ViewTender = () => {
   const [openModal, setOpenModal] = useState({ action: null, tab: null });
   const [searchParams, setSearchParams] = useSearchParams();
   const [isApproved, setIsApproved] = useState(false);
+  const [activeTabLoading, setActiveTabLoading] = useState(true);
   const defaultTab = tabs[0].id;
   const activeTab = searchParams.get("tab") || defaultTab;
 
   const checkApprovalStatus = async () => {
     try {
       const res = await axios.get(`${API}/tender/approval-status/${tender_id}`);
-      console.log(res);
-
       if (res.data.success) {
         setIsApproved(res.data.approved);
+        setActiveTabLoading(false); // <-- stop loader once data is ready
+      } else {
+        setLoading(false);
       }
     } catch (error) {
       toast.error("Error checking approval status");
@@ -227,6 +229,7 @@ const ViewTender = () => {
 
   useEffect(() => {
     checkApprovalStatus();
+    setActiveTabLoading(true);
   }, [tender_id]);
 
   const handleTabChange = (id) => {
@@ -301,7 +304,7 @@ const ViewTender = () => {
           </div>
         </div>
         <div className=" h-full overflow-y-auto  no-scrollbar">
-          {activeTabData?.component}
+          {activeTabLoading ? <Loader /> : activeTabData?.component}
           <div className=" cursor-pointer place-self-end  items-center  flex justify-end ">
             <p
               onClick={() => navigate("..")}

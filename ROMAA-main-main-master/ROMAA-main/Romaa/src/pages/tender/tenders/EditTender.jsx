@@ -6,6 +6,7 @@ import axios from "axios";
 import { IoClose } from "react-icons/io5";
 import { API } from "../../../constant";
 import { InputField } from "../../../components/InputField";
+import { toast } from "react-toastify";
 
 // ✅ Validation Schema (matches AddTender)
 const schema = yup.object().shape({
@@ -105,6 +106,7 @@ const EditTender = ({ item, onclose, onUpdated }) => {
       await axios.put(`${API}/tender/updatetender/${item.tender_id}`, data);
       if (onUpdated) onUpdated();
       onclose();
+      toast.success("Tender updated successfully ✅");
     } catch (err) {
       console.error("Update failed", err);
       alert("Failed to update tender. Please try again.");

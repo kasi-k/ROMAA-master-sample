@@ -75,6 +75,7 @@ const ProjectPenalty = () => {
       title="Tender Management"
       subtitle="Project Penalty"
       pagetitle="Project Penalty"
+      loading = {loading}
       endpoint={penalty}
       columns={ProjectPenaltyColumns}
       FilterModal={Filters}

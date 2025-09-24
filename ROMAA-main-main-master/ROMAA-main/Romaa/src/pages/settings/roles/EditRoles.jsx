@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Title from "../../../components/Title";
 import axios from "axios";
 import { API } from "../../../constant";
+import { toast } from "react-toastify";
 
 const EditRoles = ({ item }) => {
   const [roleName, setRoleName] = useState("");
@@ -12,7 +13,7 @@ const EditRoles = ({ item }) => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const roleId = state?.item.role_id;
-  const [newRole, setNewRole] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const settingsOptions = [
     "Dashboard",
@@ -118,17 +119,19 @@ const EditRoles = ({ item }) => {
     };
 
     try {
+       setLoading(true);
       const response = await axios.put(
         `${API}/role/updatebyroleid?roleId=${roleId}`,
         roleAccessLevel
       );
       if (response.status === 200) {
         navigate("/settings/roles");
-        window.location.reload();
-        toast.success("Role Updated Successfully");
+        toast.success("Role Updated Successfully");  
       }
+
     } catch (error) {
       console.log(error);
+       setLoading(false);
     }
 
     // console.log("Saved role:", {
@@ -153,12 +156,15 @@ const EditRoles = ({ item }) => {
           >
             Cancel
           </p>
-          <p
+          <button
+            disabled={loading}
             onClick={handleSave}
-            className="bg-darkest-blue text-white px-8 py-2 rounded-sm"
+            className={`cursor-pointer px-6 text-white rounded ${
+              loading ? "bg-gray-500 cursor-not-allowed" : "bg-darkest-blue"
+            }`}
           >
-            Save
-          </p>
+            {loading ? "Saving..." : "Save"}
+          </button>
         </div>
       </div>
       <div className="flex items-center  gap-10 mb-4">

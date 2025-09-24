@@ -7,6 +7,7 @@ import { InputField } from "../../../components/InputField";
 import axios from "axios";
 import { API } from "../../../constant";
 import Select from "react-select";
+import { toast } from "react-toastify";
 
 const schema = yup.object().shape({
   tender_name: yup.string().required("Tender Name is required"),
@@ -138,6 +139,7 @@ const clientNameOptions = clients.map((c, i) => ({
       await axios.post(`${API}/tender/addtender`, data);
       if (onSuccess) onSuccess();
       onclose();
+      toast.success("Tender created successfully ✅");
     } catch (err) {
       console.error("Error creating tender:", err);
       alert(err.response?.data?.message || "Failed to create tender");

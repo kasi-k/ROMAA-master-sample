@@ -67,6 +67,7 @@ const WorkOrder = () => {
       title="Tender Management"
       subtitle="Work Order"
       pagetitle="Work Order"
+      loading = {loading}
       endpoint={workOrder}
       columns={Columns}
       // AddModal={AddWorkOrder}

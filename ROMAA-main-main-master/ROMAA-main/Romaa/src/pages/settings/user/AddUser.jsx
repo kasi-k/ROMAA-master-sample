@@ -6,6 +6,7 @@ import * as yup from "yup";
 import { InputField } from "../../../components/InputField";
 import { API } from "../../../constant";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const schema = yup.object().shape({
   userid: yup.string().required("User ID is required"),
@@ -87,6 +88,7 @@ const AddUser = ({ onclose }) => {
         `${API}/employee/updateemployee/${employee_id}`, // <-- employee_id in URL
         payload
       );
+      toast.success("User added successfully ✅");
       onclose();
     } catch (err) {
       console.error("Error updating user:", err);

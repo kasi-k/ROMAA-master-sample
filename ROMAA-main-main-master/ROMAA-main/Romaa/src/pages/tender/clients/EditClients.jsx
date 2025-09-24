@@ -5,6 +5,7 @@ import * as yup from "yup";
 import axios from "axios";
 import { IoClose } from "react-icons/io5";
 import { API } from "../../../constant";
+import { toast } from "react-toastify";
 
 const schema = yup.object().shape({
   client_name: yup.string().required("Client Name is required"),
@@ -79,9 +80,10 @@ const EditClients = ({ item, onclose, onUpdated }) => {
       };
 
       await axios.put(`${API}/client/updateclient/${item.client_id}`, payload);
-
+     
       if (onUpdated) onUpdated(); 
       onclose();
+      toast.success("Client updated successfully ✅");
     } catch (err) {
       console.error("Update failed", err);
       alert("Failed to update client. Please try again.");

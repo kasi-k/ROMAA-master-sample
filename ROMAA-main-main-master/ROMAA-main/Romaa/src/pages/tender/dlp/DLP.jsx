@@ -18,6 +18,7 @@ const DLP = () => {
     <Table
       title="Tender Management"
       subtitle="DLP"
+      // loading ={true}
       pagetitle="DLP"
       endpoint={EMDdata}
       columns={Columns}

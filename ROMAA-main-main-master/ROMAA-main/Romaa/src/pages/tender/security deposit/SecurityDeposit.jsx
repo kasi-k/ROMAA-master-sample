@@ -88,6 +88,7 @@ const SecurityDeposit = () => {
       title="Tender Management"
       subtitle="Security Deposit"
       pagetitle="Security Deposit"
+      loading={loading}
       endpoint={deposit}
       columns={Columns}
       FilterModal={Filters}

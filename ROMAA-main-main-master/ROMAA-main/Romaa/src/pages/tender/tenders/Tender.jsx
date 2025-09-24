@@ -85,6 +85,7 @@ const Tender = () => {
       title="Tender Management"
       subtitle="Tender"
       pagetitle="Tenders Management"
+      loading={loading}
       endpoint={tenders}
       columns={TenderColumns}
       AddModal={AddTender}

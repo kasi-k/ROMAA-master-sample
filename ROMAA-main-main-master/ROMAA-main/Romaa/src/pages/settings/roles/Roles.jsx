@@ -6,6 +6,7 @@ import { RiUserAddLine } from "react-icons/ri";
 import DeleteModal from "../../../components/DeleteModal";
 import axios from "axios";
 import { API } from "../../../constant";
+import { toast } from "react-toastify";
 
 const RoleColumns = [
   { label: "Name", key: "name" },
@@ -54,14 +55,19 @@ const Roles = () => {
   const handleDelete = async (roleId) => {
     try {
       await axios.delete(`${API}/role/deletebyroleid?roleId=${roleId}`);
+      toast.success("Role deleted successfully");
       fetchRoles();
-    } catch (err) {}
+    } catch (err) {
+      toast.error("Failed to delete role");
+      console.error(err);
+    }
   };
 
   return (
     <Table
       title="Settings"
       subtitle="Roles "
+      loading={loading}
       pagetitle="Roles"
       endpoint={roles}
       columns={RoleColumns}

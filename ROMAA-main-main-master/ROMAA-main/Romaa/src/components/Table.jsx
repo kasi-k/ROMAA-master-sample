@@ -11,7 +11,7 @@ import Pagination from "./Pagination";
 import { useSearch } from "./SearchBar";
 import { useNavigate } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
-
+import Loader from "./Loader";
 
 const truncateWords = (text, limit = 7) => {
   if (!text) return "";
@@ -19,7 +19,34 @@ const truncateWords = (text, limit = 7) => {
   if (words.length <= limit) return text;
   return words.slice(0, limit).join(" ") + "...";
 };
-
+// const ConstructionLoader = ({ columns, rows = 5 }) => {
+//   return (
+//     <tbody className="animate-pulse">
+//       {[...Array(rows)].map((_, rowIndex) => (
+//         <tr
+//           key={rowIndex}
+//           className="border-b-[3px] dark:border-overall_bg-dark border-light-blue"
+//         >
+//           <td className="p-3">
+//             <div className="h-4 w-8 bg-gray-300 dark:bg-gray-700 rounded"></div>
+//           </td>
+//           {columns.map((_, colIndex) => (
+//             <td key={colIndex} className="p-3 text-center">
+//               <div className="h-4 w-24 bg-gray-300 dark:bg-gray-700 rounded"></div>
+//             </td>
+//           ))}
+//           <td className="p-3 text-center">
+//             <div className="flex justify-center gap-2">
+//               <div className="h-6 w-6 bg-yellow-400 rounded animate-bounce"></div>
+//               <div className="h-6 w-6 bg-orange-400 rounded animate-pulse"></div>
+//               <div className="h-6 w-6 bg-gray-400 rounded animate-ping"></div>
+//             </div>
+//           </td>
+//         </tr>
+//       ))}
+//     </tbody>
+//   );
+// };
 
 const Table = ({
   endpoint,
@@ -42,6 +69,7 @@ const Table = ({
   subtitle,
   pagetitle,
   onExport,
+  loading = false,
   contentMarginTop = "mt-4",
   totalPages = 1,
   currentPage = 1,
@@ -226,9 +254,15 @@ const Table = ({
                 )}
               </tr>
             </thead>
-
             <tbody className=" dark:text-white text-greyish dark:bg-layout-dark bg-white text-sm font-light">
-              {sortedItems.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={columns.length + 2} className="py-20">
+                    {/* Your custom Loader component */}
+                    <Loader />
+                  </td>
+                </tr>
+              ) : sortedItems.length > 0 ? (
                 sortedItems.map((item, index) => (
                   <tr
                     key={index}
@@ -255,8 +289,9 @@ const Table = ({
                         (typeof cellValue === "string" &&
                           cellValue.trim().toLowerCase() === "undefined");
                       //const displayValue = isEmpty ? "-" : cellValue;
-                      const displayValue = isEmpty ? "-" : truncateWords(String(cellValue), 7);
-
+                      const displayValue = isEmpty
+                        ? "-"
+                        : truncateWords(String(cellValue), 7);
 
                       return (
                         <td
@@ -387,15 +422,15 @@ const Table = ({
           </table>
         </div>
       </div>
-
-      <Pagination
-        totalItems={sortedItems.length}
-        totalPages={totalPages}
-        itemsPerPage={itemsPerPage}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-      />
-
+      {!loading && (
+        <Pagination
+          totalItems={sortedItems.length}
+          totalPages={totalPages}
+          itemsPerPage={itemsPerPage}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
+      )}
       {AddModal && showAdd && (
         <AddModal onclose={() => setShowAdd(false)} onSuccess={onSuccess} />
       )}

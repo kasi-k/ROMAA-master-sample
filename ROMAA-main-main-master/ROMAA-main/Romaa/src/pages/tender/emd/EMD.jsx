@@ -13,7 +13,7 @@ const Columns = [
     label: "EMP",
     key: "emd.approved_emd_details[0].emd_approved_amount",
     render: (item) =>
-      item.emd?.approved_emd_details?.[0]?.emd_approved_amount ?? "-"
+      item.emd?.approved_emd_details?.[0]?.emd_approved_amount ?? "-",
   },
   {
     label: "Expiry Date",
@@ -21,26 +21,25 @@ const Columns = [
     render: (item) =>
       item.emd?.emd_validity
         ? new Date(item.emd.emd_validity).toLocaleDateString("en-GB")
-        : "-"
+        : "-",
   },
   {
     label: "Amount Collected",
     key: "emd.approved_emd_details[0].emd_deposit_amount_collected",
     render: (item) =>
-      item.emd?.approved_emd_details?.[0]?.emd_deposit_amount_collected ?? "-"
+      item.emd?.approved_emd_details?.[0]?.emd_deposit_amount_collected ?? "-",
   },
   {
     label: "Balance",
     key: "emd.approved_emd_details[0].emd_deposit_pendingAmount",
     render: (item) =>
-      item.emd?.approved_emd_details?.[0]?.emd_deposit_pendingAmount ?? "-"
+      item.emd?.approved_emd_details?.[0]?.emd_deposit_pendingAmount ?? "-",
   },
   {
     label: "Note",
     key: "emd.approved_emd_details[0].emd_note",
-    render: (item) =>
-      item.emd?.approved_emd_details?.[0]?.emd_note ?? "-"
-  }
+    render: (item) => item.emd?.approved_emd_details?.[0]?.emd_note ?? "-",
+  },
 ];
 
 const EMD = () => {
@@ -68,7 +67,7 @@ const EMD = () => {
       });
       setEMD(res.data.data);
       console.log(res.data.data);
-      
+
       setTotalPages(res.data.totalPages);
     } catch (err) {
       toast.error("Failed to fetch tenders");
@@ -85,6 +84,7 @@ const EMD = () => {
     <Table
       title="Tender Management"
       subtitle="EMD"
+      loading={loading}
       pagetitle="EMD(Earnest Money Deposit)"
       endpoint={EMD}
       columns={Columns}

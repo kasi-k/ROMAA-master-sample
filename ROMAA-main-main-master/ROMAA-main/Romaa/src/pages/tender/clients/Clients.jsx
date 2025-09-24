@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { API } from "../../../constant";
 import { toast } from "react-toastify";
 import axios from "axios";
+import Loader from "../../../components/Loader";
 
 const ClientColumns = [
   { label: "Client ID", key: "client_id" },
@@ -37,39 +38,70 @@ const Clients = () => {
     todate: "",
   });
 
-  const fetchClients = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get(`${API}/client/getclients`, {
-        params: {
-          page: currentPage,
-          limit: 10,
-          search: searchTerm,
-          fromdate: filterParams.fromdate,
-          todate: filterParams.todate,
-        },
-      });
+  // const fetchClients = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const res = await axios.get(`${API}/client/getclients`, {
+  //       params: {
+  //         page: currentPage,
+  //         limit: 10,
+  //         search: searchTerm,
+  //         fromdate: filterParams.fromdate,
+  //         todate: filterParams.todate,
+  //       },
+  //     });
 
-      setClients(res.data.data);
-      setTotalPages(res.data.totalPages);
-      console.log(res.data);
-    } catch (err) {
-      toast.error("Failed to fetch clients");
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     setClients(res.data.data);
+  //     setTotalPages(res.data.totalPages);
+  //   } catch (err) {
+  //     toast.error("Failed to fetch clients");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const fetchClients = async () => {
+  setLoading(true);
+
+  // start timer for minimum 2s delay
+  const minDelay = new Promise((resolve) => setTimeout(resolve, 2000));
+
+  try {
+    const resPromise = axios.get(`${API}/client/getclients`, {
+      params: {
+        page: currentPage,
+        limit: 10,
+        search: searchTerm,
+        fromdate: filterParams.fromdate,
+        todate: filterParams.todate,
+      },
+    });
+
+    // wait for both API + 2s
+    const [res] = await Promise.all([resPromise, minDelay]);
+
+    setClients(res.data.data);
+    setTotalPages(res.data.totalPages);
+  } catch (err) {
+    toast.error("Failed to fetch clients");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchClients();
   }, [currentPage, searchTerm, filterParams]);
 
   return (
+  
     <Table
       title="Tender Management"
       subtitle="Client"
       pagetitle="Clients Management"
       endpoint={clients}
+      loading={loading}
       columns={ClientColumns}
       AddModal={AddClients}
       EditModal={EditClients}
@@ -85,6 +117,7 @@ const Clients = () => {
       onUpdated={fetchClients}
       onSuccess={fetchClients}
     />
+      
   );
 };
 

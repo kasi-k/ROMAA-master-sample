@@ -157,6 +157,7 @@ import ViewMechinerySchedule from "../pages/projects/schedule/schedule/tabs/mach
 import EditContractor from "../pages/Hr/contract & Nmr/EditContractor";
 import ViewContractor from "../pages/Hr/contract & Nmr/ViewContractor";
 import PenaltyCardGrid from "../pages/tender/project penalty/PenaltyView";
+import { ToastContainer } from "react-toastify";
 
 const AppRoutes = () => {
   return (
@@ -532,6 +533,18 @@ const AppRoutes = () => {
           </Route>
         </Routes>
       </BrowserRouter>
+       <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </>
   );
 };
