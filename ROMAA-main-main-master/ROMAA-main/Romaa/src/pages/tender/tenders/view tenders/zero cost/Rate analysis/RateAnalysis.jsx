@@ -1,130 +1,366 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { HiArrowsUpDown } from "react-icons/hi2";
-import { RateAnalysisdata } from "../../../../../../components/Data";
 
-const RateAnalysis = () => {
-  const [expandedRow, setExpandedRow] = useState(false);
+const sample = [
+  {
+    itemNo: 1,
+    workItem: "Earthwork",
+    unit: "Cum",
+    output: 855.36,
+    finalRate: 663.35,
+    lines: [
+      {
+        category: "MACHINERIES",
+        sub: [
+          {
+            description: "Hire JCB",
+            unit: "Month",
+            quantity: 2,
+            output: null,
+            rate: 80000,
+            amount: 160000,
+            finalRate: 239.67,
+          },
+          {
+            description: "Tractor",
+            unit: "Month",
+            quantity: 1,
+            output: null,
+            rate: 45000,
+            amount: 45000,
+            finalRate: 239.67,
+          },
+        ],
+      },
+      {
+        category: "FUEL",
+        sub: [
+          {
+            description: "Diesel",
+            unit: "Lit",
+            quantity: 1275,
+            output: null,
+            rate: 96,
+            amount: 122400,
+            finalRate: 143.1,
+          },
+        ],
+      },
+      {
+        category: "SUBCONTRACTOR",
+        sub: [
+          {
+            description: "Blasting",
+            unit: "Points",
+            quantity: 1100,
+            output: null,
+            rate: 180,
+            amount: 198000,
+            finalRate: 231.48,
+          },
+        ],
+      },
+      {
+        category: "MANPOWER",
+        sub: [
+          {
+            description: "Helpers",
+            unit: "Nos",
+            quantity: 60,
+            output: null,
+            rate: 700,
+            amount: 42000,
+            finalRate: 49.1,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    itemNo: 2,
+    workItem: "Refilling",
+    unit: "Cum",
+    output: 684.288,
+    finalRate: 89.58,
+    lines: [
+      {
+        category: "MACHINERIES",
+        sub: [
+          {
+            description: "Hire JCB",
+            unit: "Month",
+            quantity: 0.5,
+            output: null,
+            rate: 80000,
+            amount: 40000,
+            finalRate: 58.45,
+          },
+        ],
+      },
+      {
+        category: "FUEL",
+        sub: [
+          {
+            description: "Diesel",
+            unit: "Lit",
+            quantity: 112.5,
+            output: null,
+            rate: 96,
+            amount: 10800,
+            finalRate: 15.78,
+          },
+        ],
+      },
+      {
+        category: "MANPOWER",
+        sub: [
+          {
+            description: "Helpers",
+            unit: "Nos",
+            quantity: 15,
+            output: null,
+            rate: 700,
+            amount: 10500,
+            finalRate: 15.34,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    itemNo: 3,
+    workItem: "Gravel Filling",
+    unit: "Cum",
+    output: 543.54,
+    finalRate: 301.03,
+    lines: [
+      {
+        category: "MATERIALS",
+        sub: [
+          {
+            description: "Water Load",
+            unit: "Load",
+            quantity: 30,
+            output: null,
+            rate: 700,
+            amount: 21000,
+            finalRate: 38.62,
+          },
+        ],
+      },
+      {
+        category: "MACHINERIES",
+        sub: [
+          {
+            description: "Hire JCB",
+            unit: "Month",
+            quantity: 1,
+            output: null,
+            rate: 80000,
+            amount: 80000,
+            finalRate: 147.4,
+          },
+        ],
+      },
+      {
+        category: "FUEL",
+        sub: [
+          {
+            description: "Diesel",
+            unit: "Lit",
+            quantity: 375,
+            output: null,
+            rate: 96,
+            amount: 36000,
+            finalRate: 66.27,
+          },
+        ],
+      },
+      {
+        category: "MANPOWER",
+        sub: [
+          {
+            description: "Helpers",
+            unit: "Nos",
+            quantity: 60,
+            output: null,
+            rate: 700,
+            amount: 42000,
+            finalRate: 48.74,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    itemNo: 0,
+    workItem: "",
+    unit: null,
+    output: null,
+    finalRate: null,
+    lines: [],
+  },
+];
+
+const RateAnalysis = ({ data = sample }) => {
+  const [expandedRow, setExpandedRow] = useState(null);
   const toggleRow = (index) => {
     setExpandedRow(expandedRow === index ? null : index);
   };
 
+  const columns = [
+    { label: "Description" },
+    { label: "Unit" },
+    { label: "Quantity" },
+    { label: "Rate" },
+    { label: "Amount" },
+    { label: "Final Rate" },
+  ];
+  const TableHeader = ({ columns }) => {
+    return (
+      <table className="w-full   text-sm">
+        <thead className=" bg-indigo-200">
+          <tr className="">
+            {columns.map((col, idx) => (
+              <th key={idx} className="p-2 ">
+                {col.label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+      </table>
+    );
+  };
+
   return (
     <div className="font-roboto-flex flex flex-col h-full">
-      <div className="mt-4 overflow-y-auto no-scrollbar ">
+      <div className="mt-4 overflow-y-auto no-scrollbar">
         <div className="overflow-auto no-scrollbar">
           <table className="w-full whitespace-nowrap">
             <thead>
               <tr className="font-semibold text-sm dark:bg-layout-dark bg-white border-b-4 dark:border-border-dark-grey border-light-blue">
                 <th className="p-3.5 rounded-l-lg">S.no</th>
-                {["Description", "Unit", "Quantity", "Rate", "Amount"].map(
-                  (heading) => (
-                    <th key={heading} className="p-3">
-                      <h1 className="flex items-center justify-center gap-2">
-                        {heading} <HiArrowsUpDown size={18} />
-                      </h1>
-                    </th>
-                  )
-                )}
+                <th className="p-3">Work Item</th>
+                <th className="p-3">Unit</th>
+                <th className="p-3">Final Rate</th>
+                <th className="p-3">Output</th>
                 <th className="pr-2 rounded-r-lg"></th>
               </tr>
             </thead>
 
-            <tbody className="text-greyish  text-sm font-light">
-              {RateAnalysisdata.length > 0
-                ? RateAnalysisdata.map((data, index) => {
-                    return (
-                      <React.Fragment key={index}>
-                        <tr className="border-b-[3px] dark:bg-layout-dark bg-white dark:border-border-dark-grey border-light-blue text-center">
-                          <td className="rounded-l-lg py-3">{index + 1}</td>
-                          <td>{data.Description}</td>
-                          <td>{data.Unit}</td>
-                          <td>{data.Quantity}</td>
-                          <td>{data.Rate}</td>
-                          <td>{data.Amount}</td>
-                          <td className="rounded-r-lg">
-                            <button
-                              onClick={() => toggleRow(index)}
-                              className="cursor-pointer bg-blue-200  text-lg mr-2 rounded-sm p-0.5 text-blue-600"
-                            >
-                              {expandedRow === index ? (
-                                <ChevronUp />
-                              ) : (
-                                <ChevronDown />
-                              )}
-                            </button>
-                          </td>
-                        </tr>
-                        {expandedRow === index && (
-                          <tr>
-                            <td colSpan="7" className="px-10 py-1">
-                              <div className="dark:bg-layout-dark bg-white p-4 text-center rounded-md">
-                                {data.details && data.details.length > 0 ? (
-                                  data.details.map((detail, i) => (
-                                    <table
-                                      className="w-full text-sm bg-indigo-200 "
-                                      key={i}
-                                    >
-                                      <thead className="border-b-2 dark:border-border-dark-grey border-white">
-                                        <tr>
-                                          <th className="py-2 px-2 font-semibold">
-                                            {detail.head}
-                                          </th>
-                                        </tr>
-                                      </thead>
-                                      <tbody className="dark:bg-overall_bg-dark bg-gray-200  ">
-                                        <tr className="border-b dark:border-border-dark-grey border-white">
-                                          <td className="py-1.5 px-2 font-medium">
-                                            {detail.desc}
-                                          </td>
-                                          <td className="py-1.5 px-2">
-                                            {detail.day}
-                                          </td>
-                                          <td className="py-1.5 px-2">
-                                            {detail.value}
-                                          </td>
-                                          <td className="py-1.5 px-2">
-                                            {detail.rate}
-                                          </td>
-                                          <td className="py-1.5 px-2">
-                                            {detail.amount}
-                                          </td>
-                                        </tr>
-                                        <tr className="text-end border-b dark:border-border-dark-grey border-white">
-                                          <td
-                                            colSpan={5}
-                                            className="py-1.5 px-22"
-                                          >
-                                            {detail.amount}
-                                          </td>
-                                        </tr>
-                                        <tr className=" dark:bg-layout-dark bg-white text-end border-b dark:border-border-dark-grey border-white">
-                                          <td className="font-semibold">
-                                            Dismantling PCC Total =
-                                          </td>
-                                          <td
-                                            colSpan={5}
-                                            className="py-1.5 px-22"
-                                          >
-                                            {detail.amount}
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  ))
-                                ) : (
-                                  <div className="text-red-500 py-4">
-                                    No data available
+            <tbody className="text-greyish text-sm font-light">
+              {data && data.length > 0 ? (
+                data.map((workItem, index) => (
+                  <React.Fragment key={workItem.itemNo}>
+                    <tr
+                      className="border-b-[3px] dark:bg-layout-dark bg-white dark:border-border-dark-grey border-light-blue text-center cursor-pointer"
+                      onClick={() => toggleRow(index)}
+                    >
+                      <td className="rounded-l-lg py-3">{index + 1}</td>
+                      <td>{workItem.workItem}</td>
+                      <td>{workItem.unit || "-"}</td>
+                      <td>{workItem.finalRate || "-"}</td>
+                      <td>{workItem.output || "-"}</td>
+                      <td className="rounded-r-lg">
+                        <button
+                          onClick={() => toggleRow(index)}
+                          className="cursor-pointer bg-blue-200  text-lg mr-2 rounded-sm p-0.5 text-blue-600"
+                        >
+                          {expandedRow === index ? (
+                            <ChevronUp />
+                          ) : (
+                            <ChevronDown />
+                          )}
+                        </button>
+                      </td>
+                    </tr>
+
+                    {expandedRow === index && (
+                      <tr>
+                        <td colSpan="7" className="px-10 py-4 ">
+                        
+                          <div className="dark:bg-layout-dark bg-white p-4 text-center rounded-md">
+                              <TableHeader columns={columns} />
+                            {workItem.lines && workItem.lines.length > 0 ? (
+                              workItem.lines.map((categoryGroup) => (
+                                <div
+                                  key={categoryGroup.category}
+                                  className="mb-4 rounded-lg bg-white shadow dark:bg-layout-dark"
+                                >
+                                  <div className="p-3 font-semibold border-b-2 dark:border-border-dark-grey border-white text-left">
+                                    {categoryGroup.category}
                                   </div>
-                                )}
+
+                                  <table className="w-full text-sm">
+                                    {/* <thead className="bg-indigo-200 text-center">
+                                      <tr>
+                                        <th className="p-2">
+                                          Description
+                                        </th>
+                                        <th className=" ">Unit</th>
+                                        <th className="">
+                                          Quantity
+                                        </th>
+                                        <th className=" ">Rate</th>
+                                        <th className=" ">
+                                          Amount
+                                        </th>
+
+                                        <th className="">
+                                          Final Rate
+                                        </th>
+                                      </tr>
+                                    </thead> */}
+
+                                    <tbody>
+                                      {categoryGroup.sub.map((line, idx2) => (
+                                        <tr
+                                          key={idx2}
+                                          className="border-b-2 dark:border-gray-500 border-white bg-gray-300 dark:bg-layout-dark"
+                                        >
+                                          <td className="p-2 ">
+                                            {line.description}
+                                          </td>
+                                          <td className="text-left">
+                                            {line.unit || "-"}
+                                          </td>
+                                          <td className="text-left">
+                                            {line.quantity ?? "-"}
+                                          </td>
+                                          <td className="">
+                                            {line.rate ?? "-"}
+                                          </td>
+                                          <td className="">
+                                            {line.amount ?? "-"}
+                                          </td>
+                                          <td className="">
+                                            {line.finalRate ?? "-"}
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              ))
+                            ) : (
+                              <div className="text-red-500 py-4 text-center">
+                                No detail lines available
                               </div>
-                            </td>
-                          </tr>
-                        )}
-                      </React.Fragment>
-                    );
-                  })
-                : ""}
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="text-red-500 py-4 text-center">
+                    No data available
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

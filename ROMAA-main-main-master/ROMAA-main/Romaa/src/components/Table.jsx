@@ -96,6 +96,22 @@ const Table = ({
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
+    const [delayedLoading, setDelayedLoading] = useState(false);
+
+  useEffect(() => {
+    let timer;
+
+    if (loading) {
+      // Show loader immediately
+      setDelayedLoading(true);
+    } else {
+      // Keep loader visible for minDelay ms before hiding
+      timer = setTimeout(() => setDelayedLoading(false), 2000);
+    }
+
+    return () => clearTimeout(timer);
+  }, [loading, 2000]);
+
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, filterParams]);
@@ -255,7 +271,7 @@ const Table = ({
               </tr>
             </thead>
             <tbody className=" dark:text-white text-greyish dark:bg-layout-dark bg-white text-sm font-light">
-              {loading ? (
+              {delayedLoading ? (
                 <tr>
                   <td colSpan={columns.length + 2} className="py-20">
                     {/* Your custom Loader component */}

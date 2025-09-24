@@ -19,7 +19,7 @@ const schema = yup.object().shape({
   role: yup.string().required("Role is required"),
 });
 
-const AddUser = ({ onclose }) => {
+const AddUser = ({ onclose,onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -88,6 +88,7 @@ const AddUser = ({ onclose }) => {
         `${API}/employee/updateemployee/${employee_id}`, // <-- employee_id in URL
         payload
       );
+      onSuccess();
       toast.success("User added successfully ✅");
       onclose();
     } catch (err) {

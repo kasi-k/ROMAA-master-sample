@@ -11,8 +11,10 @@ export const InputField = ({
   colInp="col-span-5",
   colLab="col-span-3",
   options = [],
+  onChange
 }) => {
   const [showPassword, setShowPassword] = useState(false);
+    const registerProps = register(name);
   return (
     <div className="grid grid-cols-8 items-center gap-4">
       <label className={`${colLab} text-sm font-medium`}>{label}</label>
@@ -21,6 +23,10 @@ export const InputField = ({
         <select
           defaultValue=""
           {...register(name)}
+           onChange={(e) => {
+            registerProps.onChange(e); // react-hook-form handler
+            if (onChange) onChange(e); // custom handler
+          }}
           className={`col-span-5 dark:bg-overall_bg-dark border dark:border-border-dark-grey border-input-bordergrey rounded-lg outline-none py-2.5 pl-2 text-xs font-light 
         ${errors[name] ? "border-red-500" : ""}`}
         >
