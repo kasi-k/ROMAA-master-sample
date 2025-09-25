@@ -5,6 +5,7 @@ import { API } from "../../../../../../constant";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import ViewBoqSplit from "./ViewBoqSplit";
 
 const Columns = [
   { label: "Item Description", key: "item_name" },
@@ -41,6 +42,8 @@ const BOQSplit = () => {
     setLoading(true);
     try {
       const res = await axios.get(`${API}/boq/items/${tender_id}`);
+      console.log(res);
+      
       setItems(res.data.data || []);
     } catch (err) {
       toast.error("Failed to fetch BOQ items");
@@ -55,6 +58,7 @@ const BOQSplit = () => {
       columns={Columns}
       loading={loading}
       exportModal={false}
+      ViewModal={ViewBoqSplit}
     />
   );
 };
