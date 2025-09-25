@@ -4,13 +4,10 @@ import { IoClose } from "react-icons/io5";
 import { API } from "../../../../../constant";
 import { useParams } from "react-router-dom";
 
-const sampleCSv= `item_name,description,specification,unit,quantity,final_unit_rate,zero_cost_unit_rate,category,remarks,work_section
-Concrete Pouring,Pouring concrete for foundation,Grade 30 concrete,m3,100,75,10,Major,Ensure curing time is adequate,Foundation
-Brick Masonry,Wall construction using bricks,Standard clay bricks,m3,200,50,20,Major,Use approved brick supplier,Superstructure
-Steel Reinforcement,Rebar for slab and beams,Fe 500,Kg,5000,1.2,30,Major,Check bending schedule,Superstructure
-Floor Tiling,Tile finishing in ground floor,Smooth ceramic tiles,Sqm,300,20,40,Minor,Apply waterproofing,Finishing
-Wall Painting,Painting interior walls,Emulsion paint,Ltr,150,5,50,Minor,Use light color shade,Finishing
-Earthwork Excavation,Excavation of site soil,General excavation,m3,400,15,0,Major,Dispose soil properly,Foundation`
+const sampleCSv= `item_name,description,specification,unit,quantity,final_unit_rate,category,remarks,work_section
+Earthwork,Pouring concrete for foundation,Grade 30 concrete,m3,100,75,Major,Ensure curing time is adequate,Foundation
+Refilling,Wall construction using bricks,Standard clay bricks,m3,200,50,Major,Use approved brick supplier,Superstructure
+`
 
 const UploadBoq = ({ onclose, onSuccess }) => {
   const [files, setFiles] = useState([]);
