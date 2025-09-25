@@ -216,17 +216,14 @@ const RateAnalysis = ({ data = sample }) => {
   };
   const [showUpload, setShowUpload] = useState(false);
   const [rateAnalysis, setRateAnalysis] = useState([]);
-    const { tender_id } = useParams();
-    console.log(tender_id);
-    
+  const { tender_id } = useParams();
+  console.log(tender_id);
 
   const fetchRateAnalysis = async () => {
     try {
       const res = await axios.get(
         `${API}/rateanalysis/getbytenderId?tenderId=${tender_id}`
-      );
-console.log(res.data.data.work_items);
-
+      )
       setRateAnalysis(res.data.data.work_items);
     } catch (err) {
       toast.error("Failed to fetch BOQ items");
@@ -234,9 +231,9 @@ console.log(res.data.data.work_items);
     }
   };
 
-  useEffect (() => {
+  useEffect(() => {
     fetchRateAnalysis();
-  },[])
+  }, []);
 
   const columns = [
     { label: "Description" },
@@ -270,7 +267,7 @@ console.log(res.data.data.work_items);
       >
         <span className="flex  items-center dark:bg-layout-dark bg-white px-2 py-2 rounded-md text-sm">
           <TbFileExport size={22} />
-          <span className="px-1">Upload Boq</span>
+          <span className="px-1">Upload RA</span>
         </span>
       </p>
       <div className="font-roboto-flex flex flex-col h-full">
@@ -405,7 +402,7 @@ console.log(res.data.data.work_items);
         </div>
       </div>
       {showUpload && (
-        <UploadRateAnalysis onclose={() => setShowUpload(false)} />
+        <UploadRateAnalysis onclose={() => setShowUpload(false)} onSuccess={fetchRateAnalysis} />
       )}
     </>
   );

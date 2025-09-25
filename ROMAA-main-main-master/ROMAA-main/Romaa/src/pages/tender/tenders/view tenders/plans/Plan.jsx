@@ -15,21 +15,23 @@ const Plan = () => {
     fetchDocuments();
   };
 
-  const fetchDocuments = async () => {
-    try {
-      const res = await axios.get(`${API}/document/alldocuments/${tender_id}`);
-      if (res.data && res.data.tender_document) {
-        setDocuments(res.data.tender_document.documents || []);
-        console.log(res.data.tender_document.documents);
-        
-      } else {
-        setDocuments([]);
-      }
-    } catch (error) {
-      console.error("Error fetching documents", error);
+const fetchDocuments = async () => {
+  try {
+    const res = await axios.get(`${API}/document/alldocuments/${tender_id}`);
+    if (res.data && res.data.tender_document) {
+      setDocuments(res.data.tender_document.documents || []);
+    } else {
       setDocuments([]);
     }
-  };
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      setDocuments([]); // No documents, show fallback UI
+    } else {
+      console.error("Error fetching documents", error);
+    }
+  }
+};
+
 
   // Fetch documents on component mount
   useEffect(() => {

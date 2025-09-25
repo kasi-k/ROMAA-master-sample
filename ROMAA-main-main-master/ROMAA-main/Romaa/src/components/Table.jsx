@@ -96,7 +96,7 @@ const Table = ({
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
-    const [delayedLoading, setDelayedLoading] = useState(false);
+  const [delayedLoading, setDelayedLoading] = useState(false);
 
   useEffect(() => {
     let timer;
@@ -296,18 +296,25 @@ const Table = ({
                       const addRightRadius = isLastColumn && !hasAction;
 
                       const cellValue = col.render
-                        ? col.render(item)
+                        ? col.render(item) // might be JSX
                         : item[col.key];
-                      const isEmpty =
-                        cellValue === null ||
-                        cellValue === undefined ||
-                        cellValue === "" ||
-                        (typeof cellValue === "string" &&
-                          cellValue.trim().toLowerCase() === "undefined");
-                      //const displayValue = isEmpty ? "-" : cellValue;
-                      const displayValue = isEmpty
-                        ? "-"
-                        : truncateWords(String(cellValue), 7);
+
+                      let displayValue;
+                      if (React.isValidElement(cellValue)) {
+                        // Already JSX, don’t process
+                        displayValue = cellValue;
+                      } else {
+                        const isEmpty =
+                          cellValue === null ||
+                          cellValue === undefined ||
+                          cellValue === "" ||
+                          (typeof cellValue === "string" &&
+                            cellValue.trim().toLowerCase() === "undefined");
+
+                        displayValue = isEmpty
+                          ? "-"
+                          : truncateWords(String(cellValue), 7);
+                      }
 
                       return (
                         <td
