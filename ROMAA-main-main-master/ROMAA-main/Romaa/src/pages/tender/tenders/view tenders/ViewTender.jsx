@@ -23,6 +23,7 @@ import Penalities from "./Penalties/Penalities";
 import Bid from "./bid/Bid";
 import Loader from "../../../../components/Loader";
 import { set } from "date-fns";
+import TenderDetailedEstimate from "./detailed estimate/TenderDetailedEstimate";
 
 const tabs = [
   {
@@ -70,9 +71,22 @@ const tabs = [
       // },
     ],
   },
-
   {
     id: "4",
+    label: "Detailed Estimate",
+    component: <TenderDetailedEstimate />,
+    buttons: [
+      // {
+      //   label: "Export",
+      //   icon: <TbFileExport size={23} />,
+      //   className:
+      //     "dark:bg-layout-dark bg-white dark:text-white text-darkest-blue",
+      // },
+    ],
+  },
+
+  {
+    id: "5",
     label: "BOQ",
     component: <BOQ />,
     buttons: [
@@ -94,7 +108,7 @@ const tabs = [
     ],
   },
   {
-    id: "5",
+    id: "6",
     label: "Zero Cost",
     component: <ZeroCost />,
     buttons: [
@@ -133,7 +147,7 @@ const tabs = [
   //   ],
   // },
   {
-    id: "6",
+    id: "7",
     label: "EMD",
     component: <EMD />,
     buttons: [
@@ -150,7 +164,7 @@ const tabs = [
     ],
   },
   {
-    id: "7",
+    id: "8",
     label: "Vendor",
     component: <Vendor />,
     buttons: [
@@ -163,7 +177,7 @@ const tabs = [
     ],
   },
   {
-    id: "8",
+    id: "9",
     label: "Contract",
     component: <Contract />,
     buttons: [
@@ -176,7 +190,7 @@ const tabs = [
     ],
   },
   {
-    id: "9",
+    id: "10",
     label: "Penalties",
     component: <Penalities />,
     buttons: [
@@ -237,27 +251,28 @@ const ViewTender = () => {
   };
 
   const activeTabData = tabs.find((tab) => tab.id === activeTab);
-  const buttonsWithHandlers = activeTabData.buttons.map((button) => {
-    const modalMap = {
-      "Approve Tender": "approveTender",
-      "Add BOQ": "addBoq",
-      "Upload Documents": "uploadDocuments",
-      "Add EMD": "addEmd",
-    };
-    const newBtn = {
-      ...button,
-      disabled: button.label === "Approve Tender" && isApproved, // disable if approved
-    };
-
-    if (modalMap[button.label] && !newBtn.disabled) {
-      return {
-        ...newBtn,
-        onClick: () => setOpenModal(modalMap[button.label]),
+  const buttonsWithHandlers =
+    activeTabData?.buttons?.map((button) => {
+      const modalMap = {
+        "Approve Tender": "approveTender",
+        "Add BOQ": "addBoq",
+        "Upload Documents": "uploadDocuments",
+        "Add EMD": "addEmd",
       };
-    }
+      const newBtn = {
+        ...button,
+        disabled: button.label === "Approve Tender" && isApproved,
+      };
 
-    return newBtn;
-  });
+      if (modalMap[button.label] && !newBtn.disabled) {
+        return {
+          ...newBtn,
+          onClick: () => setOpenModal(modalMap[button.label]),
+        };
+      }
+
+      return newBtn;
+    }) || []; // 👈 fallback empty array
 
   return (
     <>
@@ -268,7 +283,7 @@ const ViewTender = () => {
             sub_title="Tender"
             active_title={activeTabData?.label}
           />
-          <div className="flex gap-2">
+          {/* <div className="flex gap-2">
             {buttonsWithHandlers.map((button, index) => (
               <button
                 key={index}
@@ -284,7 +299,7 @@ const ViewTender = () => {
                   : button.label}
               </button>
             ))}
-          </div>
+          </div> */}
         </div>
         <div className=" font-roboto-flex  cursor-pointer flex justify-between items-center ">
           <div className="flex flex-wrap gap-2 py-2.5 ">
