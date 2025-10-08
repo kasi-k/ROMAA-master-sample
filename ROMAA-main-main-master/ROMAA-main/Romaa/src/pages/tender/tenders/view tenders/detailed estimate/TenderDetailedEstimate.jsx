@@ -1,66 +1,101 @@
-import React, { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Title from "../../../../../components/Title";
 import GeneralAbstract from "../../../../projects/Detailed estimate/general abstract/GeneralAbstract";
 import BOQProject from "../../../../projects/Detailed estimate/BOQProjects/BOQProject";
 import NewInletDet from "../../../../projects/Detailed estimate/new inlet det/NewInletDet";
 import NewInletAbs from "../../../../projects/Detailed estimate/new inlet abs/NewInletAbs";
+import axios from "axios";
+import { API } from "../../../../../constant";
+import { toast } from "react-toastify";
 
-// Generic Detailed Component
-const DetailedComponent = ({ name }) => (
-  <div className="p-4">
-    <h2 className="font-semibold text-lg">{name} Detailed</h2>
-    <p className="text-gray-600">This is the {name} Detailed content.</p>
-  </div>
-);
-
-// Generic Abstract Component
-const AbstractComponent = ({ name }) => (
-  <div className="p-4">
-    <h2 className="font-semibold text-lg">{name} Abstract</h2>
-    <p className="text-gray-600">This is the {name} Abstract content.</p>
-  </div>
-);
 
 const TenderDetailedEstimate = () => {
+  const { tender_id } = useParams();
   const [tabs, setTabs] = useState([
     { id: "1", label: "GS(General Abstract)", component: <GeneralAbstract /> },
     { id: "2", label: "Bill of Qty", component: <BOQProject /> },
   ]);
-
+  const [activeTab, setActiveTab] = useState("1");
   const [name, setName] = useState("");
-  const [activeTab, setActiveTab] = useState(tabs[0].id);
+  const [loading, setLoading] = useState(false);
+  
 
-  const handleTabChange = (id) => setActiveTab(id);
+  // ✅ Fetch headings from backend
+  const fetchHeadings = async () => {
+    try {
+      const res = await axios.get(`${API}/detailedestimate/extractheadings`, {
+        params: { tender_id },
+      });
 
-  const handleAddTabs = (e) => {
-    e.preventDefault();
-    if (!name.trim()) return;
+      
 
-    const timestamp = Date.now();
+      if (res.data.status && res.data.data.length > 0) {
+        const dynamicTabs = res.data.data.flatMap((item, index) => [
+          {
+            id: `${item.heading}-det-${index}`,
+            label: `${item.heading} Detailed`,
+            component: <NewInletDet name={item.detailedKey} />,
+          },
+          {
+            id: `${item.heading}-abs-${index}`,
+            label: `${item.heading} Abstract`,
+            component: <NewInletAbs name={item.abstractKey} />,
+          },
+        ]);
 
-    const newDetailedTab = {
-      id: `${timestamp}-det`,
-      label: `${name} Detailed`,
-      component: <NewInletDet name={name} />,
-    };
-
-    const newAbstractTab = {
-      id: `${timestamp}-abs`,
-      label: `${name} Abstract`,
-      component: <NewInletAbs name={name} />,
-    };
-
-    setTabs((prev) => [...prev, newDetailedTab, newAbstractTab]);
-    setActiveTab(newDetailedTab.id); // switch to the new detailed tab
-    setName(""); // clear input
+        setTabs((prev) => [
+          prev[0], // keep GS(General Abstract)
+          prev[1], // keep BOQ
+          ...dynamicTabs,
+        ]);
+      }
+    } catch (error) {
+      console.error("Error fetching headings:", error);
+    }
   };
+
+  // ✅ Add new heading
+  const handleAddTabs = async (e) => {
+    e.preventDefault();
+    if (!name.trim()) return toast.error("Please enter a heading name");
+
+    setLoading(true);
+    try {
+      const res = await axios.post(
+        `${API}/detailedestimate/addheading?tender_id=${tender_id}`,
+        {
+          heading: name.toLowerCase().trim(),
+          abstract: [],
+          detailed: [],
+        }
+      );
+
+      if (res.data.status) {
+        toast.success("Heading added successfully");
+        setName("");
+        fetchHeadings(); // refresh tab list
+      } else {
+        toast.error(res.data.message || "Failed to add heading");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error adding heading");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (tender_id) fetchHeadings();
+  }, [tender_id]);
 
   const activeTabData = tabs.find((tab) => tab.id === activeTab);
 
   return (
     <div className="font-roboto-flex flex flex-col h-full p-4">
-      {/* Input form */}
+      <Title text="Tender Detailed Estimate" />
+
+      {/* Add Heading */}
       <form onSubmit={handleAddTabs} className="flex gap-2 my-3 justify-end">
         <input
           type="text"
@@ -71,9 +106,12 @@ const TenderDetailedEstimate = () => {
         />
         <button
           type="submit"
-          className="bg-darkest-blue text-white px-4 py-2 rounded-lg text-sm"
+          disabled={loading}
+          className={`px-4 py-2 rounded-lg text-sm text-white ${
+            loading ? "bg-gray-400" : "bg-darkest-blue hover:bg-blue-800"
+          }`}
         >
-          Add Tabs
+          {loading ? "Adding..." : "Add Tabs"}
         </button>
       </form>
 
@@ -82,12 +120,12 @@ const TenderDetailedEstimate = () => {
         {tabs.map(({ id, label }) => (
           <p
             key={id}
-            className={`px-4 py-2.5 rounded-lg text-sm cursor-pointer ${
+            className={`first-letter:uppercase px-4 py-2.5 rounded-lg text-sm cursor-pointer ${
               activeTab === id
                 ? "bg-darkest-blue text-white"
                 : "dark:bg-layout-dark dark:text-white bg-white text-darkest-blue"
             }`}
-            onClick={() => handleTabChange(id)}
+            onClick={() => setActiveTab(id)}
           >
             {label}
           </p>
@@ -96,11 +134,14 @@ const TenderDetailedEstimate = () => {
 
       {/* Active Component */}
       <div className="h-full overflow-y-auto no-scrollbar mt-2">
-        {activeTabData?.component}
+        {activeTabData?.component || (
+          <div className="text-center text-gray-500 mt-4">
+            Select a tab to view content
+          </div>
+        )}
       </div>
     </div>
   );
 };
-
 
 export default TenderDetailedEstimate;

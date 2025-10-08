@@ -6,6 +6,7 @@ import axios from "axios";
 import { API } from "../../../../../constant";
 import { toast } from "react-toastify";
 import { LuUserRoundSearch } from "react-icons/lu";
+import UploadBid from "./UploadBid";
 
 
 const customerColumns = [
@@ -39,7 +40,7 @@ const Bid = () => {
     if (!tender_id) return;
     setLoading(true);
     try {
-      const res = await axios.get(`${API}/boq/items/${tender_id}`, {
+      const res = await axios.get(`${API}/bid/get/${tender_id}`, {
         params: {
           page: currentPage,
           limit: 10,
@@ -49,7 +50,7 @@ const Bid = () => {
       setItems(res.data.data || []);
       setTotalPages(res.data.totalPages || 1);
     } catch (err) {
-      toast.error("Failed to fetch BOQ items");
+      toast.error("Failed to fetch Bid items");
     } finally {
       setLoading(false);
     }
@@ -61,12 +62,12 @@ const Bid = () => {
 
   const handleDeleteBoqItem = async (item_code) => {
     try {
-      await axios.delete(`${API}/boq/removeitem/${tender_id}/${item_code}`);
+      await axios.delete(`${API}/bid/removeitem/${tender_id}/${item_code}`);
       toast.success("Item deleted successfully");
       fetchBoqItems(); // refresh table
     } catch (error) {
       console.error(error);
-      toast.error("Failed to delete BOQ item");
+      toast.error("Failed to delete Bid item");
     }
   };
 
@@ -77,7 +78,7 @@ const Bid = () => {
         columns={customerColumns}
         //EditModal={true}
         exportModal={false}
-        UploadModal={true}
+        UploadModal={UploadBid}
         DeleteModal={DeleteModal}
         deletetitle="BOQ"
         totalPages={totalPages}

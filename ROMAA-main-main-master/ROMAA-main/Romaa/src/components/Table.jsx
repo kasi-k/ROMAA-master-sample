@@ -81,6 +81,7 @@ const Table = ({
   onDelete,
   idKey,
   id2Key,
+  name="no data"
 }) => {
   const navigate = useNavigate();
   const { searchTerm } = useSearch();
@@ -486,6 +487,7 @@ const Table = ({
         <UploadModal
           onclose={() => setShowUpload(false)}
           onSuccess={onSuccess}
+          name={name}
         />
       )}
     </div>

@@ -224,9 +224,9 @@ const RateAnalysis = ({ data = sample }) => {
       const res = await axios.get(
         `${API}/rateanalysis/getbytenderId?tenderId=${tender_id}`
       )
-      setRateAnalysis(res.data.data.work_items);
+      setRateAnalysis(res.data.data.work_items || []);
     } catch (err) {
-      toast.error("Failed to fetch BOQ items");
+      toast.error("Failed to fetch Rate Analysis ");
     } finally {
     }
   };
