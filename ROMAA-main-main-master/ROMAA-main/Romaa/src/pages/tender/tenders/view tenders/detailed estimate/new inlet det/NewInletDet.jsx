@@ -1,7 +1,8 @@
 import { toast } from "react-toastify";
-import Table from "../../../../components/Table";
+import Table from "../../../../../../components/Table";
+import UploadDetailedEstimate from "./UploadDetailedEstimate";
 import axios from "axios";
-import { API } from "../../../../constant";
+import { API } from "../../../../../../constant";
 import { use, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -46,6 +47,7 @@ const NewInletDet = ({ name }) => {
       columns={BoqProjectsColumns}
       routepoint={"viewnewinletdet"}
       exportModal={false}
+      UploadModal={UploadDetailedEstimate}
       onSuccess={fetchDetailedEstimate}
       name={name}
     />

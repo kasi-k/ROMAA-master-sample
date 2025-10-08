@@ -44,14 +44,10 @@ import ViewGs from "../pages/projects/Detailed estimate/general abstract/ViewGs"
 import ViewBillQtyProject from "../pages/projects/Detailed estimate/BOQProjects/ViewBOQProject";
 import ViewNewInletDet from "../pages/projects/Detailed estimate/new inlet det/ViewNewInletDet";
 import ViewNewInletAbs from "../pages/projects/Detailed estimate/new inlet abs/ViewNewInletAbs";
-import ViewRoadDetailed from "../pages/projects/Detailed estimate/road detailed/ViewRoadDetailed";
-import ViewRoadAbstract from "../pages/projects/Detailed estimate/road abstract/ViewRoadAbstract";
-import ViewRetainingWall from "../pages/projects/Detailed estimate/retaining wall/ViewRetainingWall";
 import DrawingBoq from "../pages/projects/drawing vs Boq/DrawingBoq";
 import ViewDrawingBoq from "../pages/projects/drawing vs Boq/ViewDrawingBoq";
 import WBS from "../pages/projects/WBQ/WBS";
 import ViewWbs from "../pages/projects/WBQ/ViewWbs";
-import ViewRetainingAbstract from "../pages/projects/Detailed estimate/retaining abstract/ViewRetainingAbstract";
 import ViewVendorProject from "../pages/projects/Detailed estimate/vendor/ViewVendorProjects";
 import ViewWorkOrder from "../pages/tender/work order/view work order/ViewWorkOrder";
 import ViewCalendar from "../pages/dashboard/ViewCalendar";
@@ -196,16 +192,19 @@ const AppRoutes = () => {
               <Route path="dlp" element={<DLP />} />
               <Route path="securitydeposit" element={<SecurityDeposit />} />
               {/* <Route path="projectpenalty" element={<ProjectPenalty />} /> */}
-               <Route path="projectpenalty">
+              <Route path="projectpenalty">
                 <Route index element={<ProjectPenalty />} />
-                <Route path="viewpenalty/:tender_id" element={<PenaltyCardGrid />} />
+                <Route
+                  path="viewpenalty/:tender_id"
+                  element={<PenaltyCardGrid />}
+                />
               </Route>
             </Route>
             <Route path="/projects">
               <Route index element={<Project />} />
               <Route path="zerocost">
                 <Route index element={<ZeroCost />} />
-                <Route path="viewboqsplit" element={<ViewBoqSplit/>} />
+                <Route path="viewboqsplit" element={<ViewBoqSplit />} />
                 <Route path="editrateanalysis" element={<EditRateAnalysis />} />
               </Route>
               <Route path="detailestimate">
@@ -214,16 +213,7 @@ const AppRoutes = () => {
                 <Route path="viewboqproject" element={<ViewBillQtyProject />} />
                 <Route path="viewnewinletdet" element={<ViewNewInletDet />} />
                 <Route path="viewnewinletabs" element={<ViewNewInletAbs />} />
-                <Route path="viewroaddetailed" element={<ViewRoadDetailed />} />
-                <Route path="viewroadabstract" element={<ViewRoadAbstract />} />
-                <Route
-                  path="viewretainingwall"
-                  element={<ViewRetainingWall />}
-                />
-                <Route
-                  path="viewretainingabstract"
-                  element={<ViewRetainingAbstract />}
-                />
+
                 <Route
                   path="viewvendorproject"
                   element={<ViewVendorProject />}
@@ -237,21 +227,15 @@ const AppRoutes = () => {
                 <Route index element={<WBS />} />
                 <Route path="viewwbs" element={<ViewWbs />} />
               </Route>
-      <Route path="projectschedule">
+              <Route path="projectschedule">
                 <Route index element={<ScheduleProjects />} />
-                <Route
-                  path="viewdailyproject"
-                  element={<ViewDailyProject/>}
-                /> 
-                <Route
-                  path="viewweekly"
-                  element={<ViewWeekly />}
-                />
+                <Route path="viewdailyproject" element={<ViewDailyProject />} />
+                <Route path="viewweekly" element={<ViewWeekly />} />
                 <Route
                   path="viewprojectschedule"
                   element={<ViewProjectSchedule />}
                 />
-                 <Route
+                <Route
                   path="viewmanpowerhistogram"
                   element={<ViewManPowerHistogram />}
                 />
@@ -326,8 +310,8 @@ const AppRoutes = () => {
                 <Route path="viewpurchasebill" element={<ViewPurchaseBill />} />
               </Route>
               <Route path="machinerytracking" element={<MachineryTracking />} />
-               <Route path="purchasestocks" element={<PurchaseStocks />} />
-               <Route path="purchaseassets" element={<PurchaseAssets />} />
+              <Route path="purchasestocks" element={<PurchaseStocks />} />
+              <Route path="purchaseassets" element={<PurchaseAssets />} />
             </Route>
             <Route path="/site">
               <Route index element={<Site />} />
@@ -425,10 +409,10 @@ const AppRoutes = () => {
               </Route>
               <Route path="contractnmr">
                 <Route index element={<ContractNmr />} />
-                 <Route path="viewcontractor" element={<ViewContractor />} />
-                 <Route path="editcontractor" element={<EditContractor />} />
-              </Route >
-              
+                <Route path="viewcontractor" element={<ViewContractor />} />
+                <Route path="editcontractor" element={<EditContractor />} />
+              </Route>
+
               <Route path="NMRattendance" element={<NMRattendance />} />
               <Route path="nmr">
                 <Route index element={<NMR />} />
@@ -499,7 +483,7 @@ const AppRoutes = () => {
                 <Route index element={<PlannedvsAcutal />} />
                 <Route path="viewtablereport" element={<ViewTableReport />} />
               </Route>
-           <Route path="labourproductivity">
+              <Route path="labourproductivity">
                 <Route index element={<LabourProductivity />} />
                 <Route
                   path="viewlabourproductivity"
@@ -533,7 +517,7 @@ const AppRoutes = () => {
           </Route>
         </Routes>
       </BrowserRouter>
-       <ToastContainer
+      <ToastContainer
         position="top-center"
         autoClose={2000}
         hideProgressBar={false}

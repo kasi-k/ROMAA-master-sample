@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Title from "../../../../../components/Title";
-import GeneralAbstract from "../../../../projects/Detailed estimate/general abstract/GeneralAbstract";
-import BOQProject from "../../../../projects/Detailed estimate/BOQProjects/BOQProject";
-import NewInletDet from "../../../../projects/Detailed estimate/new inlet det/NewInletDet";
-import NewInletAbs from "../../../../projects/Detailed estimate/new inlet abs/NewInletAbs";
 import axios from "axios";
 import { API } from "../../../../../constant";
 import { toast } from "react-toastify";
-
+import GeneralAbstract from "./general abstract/GeneralAbstract";
+import BOQProject from "./BOQTender/BOQProject";
+import NewInletDet from "./new inlet det/NewInletDet";
+import NewInletAbs from "./new inlet abs/NewInletAbs";
 
 const TenderDetailedEstimate = () => {
   const { tender_id } = useParams();
@@ -19,7 +18,6 @@ const TenderDetailedEstimate = () => {
   const [activeTab, setActiveTab] = useState("1");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  
 
   // ✅ Fetch headings from backend
   const fetchHeadings = async () => {
@@ -27,8 +25,6 @@ const TenderDetailedEstimate = () => {
       const res = await axios.get(`${API}/detailedestimate/extractheadings`, {
         params: { tender_id },
       });
-
-      
 
       if (res.data.status && res.data.data.length > 0) {
         const dynamicTabs = res.data.data.flatMap((item, index) => [

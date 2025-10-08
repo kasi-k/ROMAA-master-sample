@@ -11,35 +11,22 @@ import { InputField } from "../../../../components/InputField";
 import Modal from "../../../../components/Modal";
 import { MdOutlineClose } from "react-icons/md";
 import { AiOutlineSave } from "react-icons/ai";
+
 const schema = yup.object().shape({
   description: yup.string().required("Description is required"),
-  nos: yup
+  quantity: yup
     .number()
-    .typeError("Nos must be a number")
-    .required("Nos is required"),
-  length: yup
+    .typeError("Quantity must be a number")
+    .required("Quantity is required"),
+  units: yup.string().required("Units are required"),
+  rate: yup
     .number()
-    .typeError("Length must be a number")
-    .required("Length is required"),
-  breadth: yup
-    .number()
-    .typeError("Breadth must be a number")
-    .required("Breadth is required"),
-  depth: yup
-    .number()
-    .typeError("Depth must be a number")
-    .required("Depth is required"),
-  contents: yup
-    .number()
-    .typeError("Contents must be a number")
-    .required("Contents is required"),
-  total: yup
-    .number()
-    .typeError("Total must be a number")
-    .required("Total is required"),
+    .typeError("Rate must be a number")
+    .required("Rate is required"),
+  amount: yup.number().required("Amount is required"),
 });
 
-const ViewRetainingWall = () => {
+const ViewNewInletAbsSite = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const navigate = useNavigate();
@@ -62,34 +49,24 @@ const ViewRetainingWall = () => {
         key: "description",
       },
       {
-        label: "Nos",
+        label: "Quantity",
         value: "1.00",
-        key: "nos",
+        key: "quantity",
       },
       {
-        label: "Length",
-        value: "0.40",
-        key: "length",
+        label: "Unit",
+        value: "Cubic Metre",
+        key: "units",
       },
       {
-        label: "Breadth",
-        value: "0.40",
-        key: "breadth",
-      },
-      {
-        label: "Depth",
-        value: "0.40",
-        key: "depth",
-      },
-      {
-        label: "Contents",
+        label: "Rate",
         value: "100.00",
-        key: "contents",
+        key: "rate",
       },
       {
-        label: "Total",
-        value: "10,01,300.00",
-        key: "total",
+        label: "Amount",
+        value: "100.00",
+        key: "amount",
       },
     ],
   });
@@ -117,34 +94,24 @@ const ViewRetainingWall = () => {
         key: "description",
       },
       {
-        label: "Nos",
-        value: formData.nos,
-        key: "nos",
+        label: "Quantity",
+        value: formData.quantity,
+        key: "quantity",
       },
       {
-        label: "Length",
-        value: formData.length,
-        key: "length",
+        label: "Unit",
+        value: formData.units,
+        key: "units",
       },
       {
-        label: "Breadth",
-        value: formData.breadth,
-        key: "breadth",
+        label: "Rate",
+        value: formData.rate,
+        key: "rate",
       },
       {
-        label: "Depth",
-        value: formData.depth,
-        key: "depth",
-      },
-      {
-        label: "Contents",
-        value: formData.contents,
-        key: "contents",
-      },
-      {
-        label: "Total",
-        value: formData.total,
-        key: "total",
+        label: "Amount",
+        value: formData.amount,
+        key: "amount",
       },
     ];
 
@@ -155,10 +122,28 @@ const ViewRetainingWall = () => {
 
     reset();
     setIsAdding(false);
+    console.log("New Inlet Abs Added:", formData);
+    console.log(data);
   };
 
   const renderField = (field, section) => {
     if (isEditing) {
+      if (field.key === "units") {
+        return (
+          <select
+            className="w-full px-2 py-2 rounded text-xs border dark:border-border-dark-grey border-input-bordergrey"
+            value={field.value}
+            onChange={(e) => updateField(field.key, e.target.value, section)}
+          >
+            <option value="">Select unit</option>
+            <option value="Cubic Meter">Cubic Meter</option>
+            <option value="Square Meter">Square Meter</option>
+            <option value="Kilogram">Kilogram</option>
+            <option value="Litre">Litre</option>
+            <option value="Meter">Meter</option>
+          </select>
+        );
+      }
       if (field.key === "description") {
         return (
           <textarea
@@ -172,7 +157,7 @@ const ViewRetainingWall = () => {
       return (
         <input
           type="text"
-          className="w-full p-1 border dark:border-border-dark-grey border-input-bordergrey rounded text-xs"
+          className="w-full p-1 border dark:border-border-dark-grey border-input-bordergrey rounded text-xs outline-none"
           value={field.value}
           onChange={(e) => updateField(field.key, e.target.value, section)}
         />
@@ -184,13 +169,13 @@ const ViewRetainingWall = () => {
 
   return (
     <>
-      <div className="h-full">
+      <div>
         <div className="flex justify-between items-center my-2">
           <Title
             title="Projects Management"
             sub_title="Detailed Estimate"
             active_title={
-              isEditing ? "Edit Retaining Wall" : "View Retaining Wall"
+              isEditing ? "Edit New Inlet Abs" : "View New Inlet Abs "
             }
           />
           {!isEditing ? (
@@ -205,7 +190,7 @@ const ViewRetainingWall = () => {
                 button_name="Add "
                 button_icon={<TbPlus size={20} />}
                 bgColor="dark:bg-layout-dark bg-white"
-                textColor=" dark:text-white text-darkest-blue"
+                textColor="dark:text-white text-darkest-blue"
                 onClick={() => setIsAdding(true)}
               />
               <Button
@@ -216,57 +201,54 @@ const ViewRetainingWall = () => {
             </div>
           )}
         </div>
-        <div className="h-11/12 overflow-y-auto no-scrollbar">
-          <div className="dark:bg-layout-dark bg-white p-4 rounded-lg space-y-2 text-sm">
-            <p className="font-semibold text-center text-lg">Retaining Wall</p>
 
-            <div className="grid grid-cols-12 gap-2 items-start">
-              {Object.entries(data).map(([section, fields]) => (
-                <React.Fragment key={section}>
-                  <div className="col-span-12 flex items-center justify-end">
-                    {isEditing && (
-                      <Button
-                        onClick={() => {
-                          setData((prevData) => {
-                            const newData = { ...prevData };
-                            delete newData[section];
-                            return newData;
-                          });
-                        }}
-                        button_name="Remove"
-                        button_icon={<MdOutlineClose size={20} />}
-                        bgColor=" dark:bg-icon-dark-red bg-red-200"
-                        textColor="text-red-500"
-                      />
-                    )}
-                  </div>
+        <div className="dark:bg-layout-dark bg-white p-4 rounded-lg space-y-2 text-sm">
+          <p className="font-semibold text-center text-lg">New Inlet Det</p>
 
-                  {fields.map((field) => (
-                    <React.Fragment key={field.key}>
-                      <p className="col-span-4 font-medium">{field.label}</p>
-                      <div className="col-span-8">
-                        {renderField(field, section)}
-                      </div>
-                    </React.Fragment>
-                  ))}
-                </React.Fragment>
-              ))}
-            </div>
+          <div className="grid grid-cols-12 gap-2 items-start">
+            {Object.entries(data).map(([section, fields]) => (
+              <React.Fragment key={section}>
+                <div className="col-span-12 flex items-center justify-end">
+                  {isEditing && (
+                    <Button
+                      onClick={() => {
+                        setData((prevData) => {
+                          const newData = { ...prevData };
+                          delete newData[section];
+                          return newData;
+                        });
+                      }}
+                      button_name={"Remove"}
+                      button_icon={<MdOutlineClose size={20} />}
+                      bgColor="dark:bg-icon-dark-red bg-red-200"
+                      textColor={"text-red-500"}
+                    />
+                  )}
+                </div>
+
+                {fields.map((field) => (
+                  <React.Fragment key={field.key}>
+                    <p className="col-span-4 font-medium">{field.label}</p>
+                    <div className="col-span-8">
+                      {renderField(field, section)}
+                    </div>
+                  </React.Fragment>
+                ))}
+              </React.Fragment>
+            ))}
           </div>
-
-          <div className="flex justify-end py-2 ">
-            <Button
-              onClick={() => navigate("..?tab=7")}
-              button_name="Back"
-              button_icon={<IoChevronBackSharp />}
-            />
-          </div>
+        </div>
+        <div className="flex justify-end py-2 ">
+          <Button
+            onClick={() => navigate("..?tab=4")}
+            button_name="Back"
+            button_icon={<IoChevronBackSharp />}
+          />
         </div>
       </div>
       {isAdding && (
         <Modal
-          title="Add Retaining Wall "
-          widthClassName="lg:w-[420px] md:w-[400px] w-96"
+          title="Add NewInlet Abs"
           onclose={() => setIsAdding(false)}
           child={
             <>
@@ -282,52 +264,42 @@ const ViewRetainingWall = () => {
                       placeholder="Enter Description of the item"
                     />
                     <InputField
-                      label="Nos"
-                      name="nos"
+                      label="Quantity"
+                      name="quantity"
                       register={register}
                       errors={errors}
                       type="number"
-                      placeholder="Enter Nos"
+                      placeholder="Enter quantity"
                     />
                     <InputField
-                      label="Length"
-                      name="length"
+                      label="Units"
+                      name="units"
                       register={register}
                       errors={errors}
-                      type="number"
-                      placeholder="Enter Length"
+                      placeholder="Enter units"
+                      type="select"
+                      options={[
+                        { value: "Cubic Meter", label: "Cubic Meter" },
+                        { value: "Square Meter", label: "Square Meter" },
+                        { value: "Kilogram", label: "Kilogram" },
+                        { value: "Litre", label: "Litre" },
+                      ]}
                     />
                     <InputField
-                      label="Breadth"
-                      name="breadth"
+                      label="Rate"
+                      name="rate"
                       register={register}
                       errors={errors}
                       type="number"
-                      placeholder="Enter Breadth"
+                      placeholder="Enter rate per unit"
                     />
                     <InputField
-                      label="Depth"
-                      name="depth"
+                      label="Amount"
+                      name="amount"
                       register={register}
                       errors={errors}
                       type="number"
-                      placeholder="Enter Depth"
-                    />
-                    <InputField
-                      label="Contents"
-                      name="contents"
-                      register={register}
-                      errors={errors}
-                      type="number"
-                      placeholder="Enter Contents"
-                    />
-                    <InputField
-                      label="Total"
-                      name="total"
-                      register={register}
-                      errors={errors}
-                      type="number"
-                      placeholder="Enter Total"
+                      placeholder="Enter total amount"
                     />
                   </div>
                 </div>
@@ -335,7 +307,7 @@ const ViewRetainingWall = () => {
                   <button
                     type="button"
                     onClick={() => setIsAdding(false)}
-                    className="cursor-pointer border dark:border-white dark:text-white  border-darkest-blue text-darkest-blue px-6 py-2 rounded"
+                    className="cursor-pointer border border-darkest-blue text-darkest-blue px-6 py-2 rounded"
                   >
                     Cancel
                   </button>
@@ -355,4 +327,4 @@ const ViewRetainingWall = () => {
   );
 };
 
-export default ViewRetainingWall;
+export default ViewNewInletAbsSite;

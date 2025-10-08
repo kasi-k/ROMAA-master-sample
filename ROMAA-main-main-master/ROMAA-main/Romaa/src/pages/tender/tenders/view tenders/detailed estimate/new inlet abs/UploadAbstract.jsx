@@ -1,19 +1,17 @@
 import axios from "axios";
 import React, { useState, useRef } from "react";
 import { IoClose } from "react-icons/io5";
-import { API } from "../../../../../constant";
 import { useParams } from "react-router-dom";
+import { API } from "../../../../../../constant";
 import { toast } from "react-toastify";
 
-const sampleCSv = `item_name,description,unit,quantity,base_rate,q_rate,n_rate,base_amount,q_amount,n_amount,remarks
-"Concrete Work","Laying and curing concrete for foundation","m3",100,2500,2600,2550,250000,260000,255000,"Use M20 mix"
-"Brick Masonry","Brick work in cement mortar 1:6","m2",200,800,850,820,160000,170000,164000,"Proper alignment required"
-"Plastering","12mm thick cement plaster","m2",150,300,320,310,45000,48000,46500,"Smooth finish required"
-"Painting","Two coats of emulsion paint","m2",180,150,160,155,27000,28800,27900,"Use branded paint"
-"Floor Tiling","Vitrified tiles flooring","m2",120,900,950,930,108000,114000,111600,"Check tile joints"
-`;
+const sampleCSv = `description,unit,quantity,rate,amount,number,length,breath,depth,contents
+"Abstract description 1",m,10,50,500,,,,,
+"Abstract description 2",pcs,5,100,500,,,,,
+"Detailed description 1",,,,,1,5,2,1,10
+"Detailed description 2",,,,,2,10,3,2,20`;
 
-const UploadBid = ({ onclose, onSuccess }) => {
+const UploadAbstract = ({ onclose, onSuccess, name }) => {
   const [files, setFiles] = useState([]);
   const [saving, setSaving] = useState(false);
   const inputRef = useRef(null);
@@ -50,19 +48,24 @@ const UploadBid = ({ onclose, onSuccess }) => {
       setSaving(true);
       const formData = new FormData();
       // Append required fields (replace with actual values or props)
-      formData.append("tender_id", tender_id);
+      formData.append("nametype", name);
       formData.append("created_by_user", "user_id_here");
 
       if (files.length === 1) {
         // Single file upload
         formData.append("file", files[0]);
-        await axios.post(`${API}/bid/uploadcsv`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        const res = await axios.post(
+          `${API}/detailedestimate/bulkinsertcustomhead?tender_id=${tender_id}`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
       }
+      toast.success("Files uploaded successfully");
       if (onSuccess) onSuccess();
       if (onclose) onclose();
-      toast.success("Files uploaded successfully");
+
       setSaving(false);
     } catch (error) {
       console.error("Upload error:", error);
@@ -75,7 +78,7 @@ const UploadBid = ({ onclose, onSuccess }) => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", "sample_bid.csv");
+    link.setAttribute("download", "sample_abstract.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -186,4 +189,4 @@ const UploadBid = ({ onclose, onSuccess }) => {
   );
 };
 
-export default UploadBid;
+export default UploadAbstract;

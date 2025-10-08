@@ -11,7 +11,14 @@ const ContractorColumns = [
 ];
 
 const Contract = () => {
-  return <Table  contentMarginTop="mt-0" endpoint={contractData} columns={ContractorColumns} exportModal={false} />;
+  return (
+    <Table
+      contentMarginTop="mt-0"
+      endpoint={contractData}
+      columns={ContractorColumns}
+      exportModal={false}
+    />
+  );
 };
 
 export default Contract;

@@ -10,10 +10,9 @@ import * as yup from "yup";
 import { InputField } from "../../../../components/InputField";
 import Modal from "../../../../components/Modal";
 import { MdOutlineClose } from "react-icons/md";
-import { AiOutlineSave } from "react-icons/ai";
 
 const schema = yup.object().shape({
-  description: yup.string().required("Description is required"),
+  heading: yup.string().required("Heading is required"),
   quantity: yup
     .number()
     .typeError("Quantity must be a number")
@@ -26,7 +25,7 @@ const schema = yup.object().shape({
   amount: yup.number().required("Amount is required"),
 });
 
-const ViewRoadDetailed = () => {
+const ViewBillQtyProject = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const navigate = useNavigate();
@@ -41,44 +40,22 @@ const ViewRoadDetailed = () => {
   });
 
   const [data, setData] = useState({
-    0: [
-      {
-        label: "Description",
-        value:
-          "Dismantling clearing away and carefully stacking materials useful for reuse for any thickness of  Plain Cement mortar walls under 3m height",
-        key: "description",
-      },
-      {
-        label: "Quantity",
-        value: "1.00",
-        key: "quantity",
-      },
-      {
-        label: "Unit",
-        value: "Cubic Metre",
-        key: "units",
-      },
-      {
-        label: "Rate",
-        value: "100.00",
-        key: "rate",
-      },
-      {
-        label: "Amount",
-        value: "100.00",
-        key: "amount",
-      },
+    inletSluice: [
+      { label: "Quantity", value: "203.00", key: "quantity" },
+      { label: "Rate", value: "₹511.00", key: "rate" },
+      { label: "Amount", value: "₹1,03,733.00", key: "amount" },
+    ],
+    road: [
+      { label: "Quantity", value: "203.00", key: "quantity" },
+      { label: "Rate", value: "₹511.00", key: "rate" },
+      { label: "Amount", value: "₹1,03,733.00", key: "amount" },
+    ],
+    floodProtection: [
+      { label: "Quantity", value: "203.00", key: "quantity" },
+      { label: "Rate", value: "₹511.00", key: "rate" },
+      { label: "Amount", value: "₹1,03,733.00", key: "amount" },
     ],
   });
-
-  const updateField = (key, newValue, section) => {
-    setData((prevData) => ({
-      ...prevData,
-      [section]: prevData[section].map((item) =>
-        item.key === key ? { ...item, value: newValue } : item
-      ),
-    }));
-  };
 
   const handleEditClick = () => setIsEditing(true);
   const handleSaveClick = () => {
@@ -86,31 +63,28 @@ const ViewRoadDetailed = () => {
   };
 
   const onSubmit = (formData) => {
-    const newKey = Object.keys(data).length;
+    const newKey = formData.heading.toLowerCase().replace(/\s+/g, "_");
+
+    // Construct new dataset array for the new key
     const newDataSet = [
-      {
-        label: "Description",
-        value: formData.description,
-        key: "description",
-      },
       {
         label: "Quantity",
         value: formData.quantity,
         key: "quantity",
       },
       {
-        label: "Unit",
+        label: "Units",
         value: formData.units,
         key: "units",
       },
       {
         label: "Rate",
-        value: formData.rate,
+        value: `₹${formData.rate}`,
         key: "rate",
       },
       {
         label: "Amount",
-        value: formData.amount,
+        value: `₹${formData.amount}`,
         key: "amount",
       },
     ];
@@ -122,42 +96,14 @@ const ViewRoadDetailed = () => {
 
     reset();
     setIsAdding(false);
-    console.log("New Inlet Abs Added:", formData);
-    console.log(data);
   };
 
   const renderField = (field, section) => {
     if (isEditing) {
-      if (field.key === "units") {
-        return (
-          <select
-            className="w-full px-2 py-2 dark:bg-layout-dark rounded text-xs border dark:border-border-dark-grey border-input-bordergrey"
-            value={field.value}
-            onChange={(e) => updateField(field.key, e.target.value, section)}
-          >
-            <option value="">Select unit</option>
-            <option value="Cubic Meter">Cubic Meter</option>
-            <option value="Square Meter">Square Meter</option>
-            <option value="Kilogram">Kilogram</option>
-            <option value="Litre">Litre</option>
-            <option value="Meter">Meter</option>
-          </select>
-        );
-      }
-      if (field.key === "description") {
-        return (
-          <textarea
-            className="w-full p-1 border dark:border-border-dark-grey border-input-bordergrey rounded text-xs"
-            value={field.value}
-            onChange={(e) => updateField(field.key, e.target.value, section)}
-            rows={4}
-          />
-        );
-      }
       return (
         <input
           type="text"
-          className="w-full p-1 border dark:border-border-dark-grey border-input-bordergrey rounded text-xs"
+          className="w-full p-1 border dark:border-border-dark-grey outline-none border-input-bordergrey rounded text-xs"
           value={field.value}
           onChange={(e) => updateField(field.key, e.target.value, section)}
         />
@@ -169,14 +115,12 @@ const ViewRoadDetailed = () => {
 
   return (
     <>
-      <div>
-        <div className="flex justify-between items-center my-2">
+      <div className="">
+        <div className="flex justify-between items-center my-2 ">
           <Title
-            title="Projects Management"
+            title="Project Management"
             sub_title="Detailed Estimate"
-            active_title={
-              isEditing ? "Edit Road Detailed" : "View Road Detailed"
-            }
+            active_title="Bill of Qty"
           />
           {!isEditing ? (
             <Button
@@ -189,26 +133,25 @@ const ViewRoadDetailed = () => {
               <Button
                 button_name="Add "
                 button_icon={<TbPlus size={20} />}
-                bgColor=" dark:bg-layout-dark bg-white"
+                bgColor="dark:bg-layout-dark bg-white"
                 textColor="dark:text-white text-darkest-blue"
                 onClick={() => setIsAdding(true)}
               />
-              <Button
-                button_name="Save"
-                button_icon={<AiOutlineSave size={23} />}
-                onClick={handleSaveClick}
-              />
+              <Button button_name="Save" onClick={handleSaveClick} />
             </div>
           )}
         </div>
 
-        <div className=" dark:bg-layout-dark bg-white p-4 rounded-lg space-y-2 text-sm">
-          <p className="font-semibold text-center text-lg">Road Detailed</p>
+        <div className="dark:bg-layout-dark bg-white p-4 rounded-lg space-y-2 text-sm ">
+          <p className="font-semibold text-center text-lg">Bill of Qty</p>
 
           <div className="grid grid-cols-12 gap-2 items-start">
             {Object.entries(data).map(([section, fields]) => (
               <React.Fragment key={section}>
-                <div className="col-span-12 flex items-center justify-end">
+                <div className="col-span-12 flex items-center justify-between">
+                  <p className="font-semibold col-span-12 py-2">
+                    {section.replace(/([A-Z])/g, " $1")}{" "}
+                  </p>
                   {isEditing && (
                     <Button
                       onClick={() => {
@@ -218,7 +161,7 @@ const ViewRoadDetailed = () => {
                           return newData;
                         });
                       }}
-                      button_name="Remove"
+                      button_name={"Remove"}
                       button_icon={<MdOutlineClose size={20} />}
                       bgColor="dark:bg-icon-dark-red bg-red-200"
                       textColor="text-red-500"
@@ -240,7 +183,7 @@ const ViewRoadDetailed = () => {
         </div>
         <div className="flex justify-end py-2 ">
           <Button
-            onClick={() => navigate("..?tab=5")}
+            onClick={() => navigate("..?tab=2")}
             button_name="Back"
             button_icon={<IoChevronBackSharp />}
           />
@@ -248,21 +191,20 @@ const ViewRoadDetailed = () => {
       </div>
       {isAdding && (
         <Modal
-          title="Add Road Detailed "
-          onclose={() => setIsAdding(false)}
           widthClassName="lg:w-[420px] md:w-[500px] w-96"
+          title=" Bill of Qty "
+          onclose={() => setIsAdding(false)}
           child={
             <>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="grid grid-c gap-4 px-6 py-6">
                   <div className="space-y-4">
                     <InputField
-                      label="Description"
-                      name="description"
-                      type="textarea"
+                      label="Heading"
+                      name="heading"
                       register={register}
                       errors={errors}
-                      placeholder="Enter Description of the item"
+                      placeholder="Enter heading "
                     />
                     <InputField
                       label="Quantity"
@@ -275,15 +217,14 @@ const ViewRoadDetailed = () => {
                     <InputField
                       label="Units"
                       name="units"
+                      type="select"
                       register={register}
                       errors={errors}
-                      placeholder="Enter units"
-                      type="select"
+                      placeholder="Select unit"
                       options={[
-                        { value: "Cubic Meter", label: "Cubic Meter" },
-                        { value: "Square Meter", label: "Square Meter" },
-                        { value: "Kilogram", label: "Kilogram" },
-                        { value: "Litre", label: "Litre" },
+                        { label: "A", value: "A" },
+                        { label: "B", value: "B" },
+                        { label: "C", value: "C" },
                       ]}
                     />
                     <InputField
@@ -308,7 +249,7 @@ const ViewRoadDetailed = () => {
                   <button
                     type="button"
                     onClick={() => setIsAdding(false)}
-                    className="cursor-pointer border dark:border-white dark:text-white  border-darkest-blue text-darkest-blue px-6 py-2 rounded"
+                    className="cursor-pointer border dark:border-white dark:text-white border-darkest-blue text-darkest-blue px-6 py-2 rounded"
                   >
                     Cancel
                   </button>
@@ -328,4 +269,4 @@ const ViewRoadDetailed = () => {
   );
 };
 
-export default ViewRoadDetailed;
+export default ViewBillQtyProject;
