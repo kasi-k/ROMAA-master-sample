@@ -45,7 +45,7 @@ const NewInletDet = ({ name }) => {
       contentMarginTop="mt-0"
       endpoint={detailedEstimate}
       columns={BoqProjectsColumns}
-      routepoint={"viewnewinletdet"}
+      // routepoint={"viewnewinletdet"}
       exportModal={false}
       UploadModal={UploadDetailedEstimate}
       onSuccess={fetchDetailedEstimate}

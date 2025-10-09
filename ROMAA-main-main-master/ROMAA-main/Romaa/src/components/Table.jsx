@@ -81,7 +81,8 @@ const Table = ({
   onDelete,
   idKey,
   id2Key,
-  name="no data"
+  name = "no data",
+  onRowClick,
 }) => {
   const navigate = useNavigate();
   const { searchTerm } = useSearch();
@@ -283,7 +284,8 @@ const Table = ({
                 sortedItems.map((item, index) => (
                   <tr
                     key={index}
-                    className="border-b-[3px] dark:border-overall_bg-dark border-light-blue text-center"
+                    className={`border-b-[3px] dark:border-overall_bg-dark border-light-blue text-center`}
+                    onClick={() => onRowClick && onRowClick(item)}
                   >
                     <td className="p-2 rounded-l-lg">{index + 1}</td>
                     {columns.map((col, colIndex) => {

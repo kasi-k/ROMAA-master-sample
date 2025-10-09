@@ -283,7 +283,7 @@ const ViewTender = () => {
             sub_title="Tender"
             active_title={activeTabData?.label}
           />
-          {/* <div className="flex gap-2">
+          <div className="flex gap-2">
             {buttonsWithHandlers.map((button, index) => (
               <button
                 key={index}
@@ -299,7 +299,7 @@ const ViewTender = () => {
                   : button.label}
               </button>
             ))}
-          </div> */}
+          </div>
         </div>
         <div className=" font-roboto-flex  cursor-pointer flex justify-between items-center ">
           <div className="flex flex-wrap gap-2 py-2.5 ">

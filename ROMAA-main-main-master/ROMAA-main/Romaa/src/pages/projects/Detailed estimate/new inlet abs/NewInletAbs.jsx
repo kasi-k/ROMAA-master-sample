@@ -3,7 +3,7 @@ import Table from "../../../../components/Table";
 import { API } from "../../../../constant";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
+import { useProject } from "../../ProjectContext";
 
 const NewInletAbsColumns = [
   { label: "Item Description", key: "description" },
@@ -14,7 +14,7 @@ const NewInletAbsColumns = [
 ];
 
 const NewInletAbs = ({ name }) => {
-  const { tender_id } = useParams();
+  const { tenderId } = useProject();
   const [abstract, setAbstract] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -22,7 +22,7 @@ const NewInletAbs = ({ name }) => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `${API}/detailedestimate/getdatacustomhead?tender_id=${tender_id}&nametype=${name}`
+        `${API}/detailedestimate/getdatacustomhead?tender_id=${tenderId}&nametype=${name}`
       );
 
       setAbstract(res.data.data || []);
@@ -34,14 +34,14 @@ const NewInletAbs = ({ name }) => {
   };
   useEffect(() => {
     fetchAbstract();
-  }, [tender_id, name]);
+  }, [tenderId, name]);
   return (
     <Table
       loading={loading}
       contentMarginTop="mt-0"
       endpoint={abstract}
       columns={NewInletAbsColumns}
-      routepoint={"viewnewinletabs"}
+      // routepoint={"viewnewinletabs"}
       onSuccess={fetchAbstract}
       exportModal={false}
       name={name}

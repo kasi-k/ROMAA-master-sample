@@ -3,7 +3,7 @@ import Table from "../../../../components/Table";
 import axios from "axios";
 import { API } from "../../../../constant";
 import { use, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useProject } from "../../ProjectContext";
 
 const BoqProjectsColumns = [
   { label: "Item Description", key: "description" },
@@ -15,7 +15,7 @@ const BoqProjectsColumns = [
 ];
 
 const NewInletDet = ({ name }) => {
-  const { tender_id } = useParams();
+   const { tenderId } = useProject();
   const [detailedEstimate, setDetailedEstimate] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -23,7 +23,7 @@ const NewInletDet = ({ name }) => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `${API}/detailedestimate/getdatacustomhead?tender_id=${tender_id}&nametype=${name}`
+        `${API}/detailedestimate/getdatacustomhead?tender_id=${tenderId}&nametype=${name}`
       );
       console.log(res);
 
@@ -36,7 +36,7 @@ const NewInletDet = ({ name }) => {
   };
   useEffect(() => {
     fetchDetailedEstimate();
-  }, [tender_id, name]);
+  }, [tenderId, name]);
 
   return (
     <Table
@@ -44,7 +44,7 @@ const NewInletDet = ({ name }) => {
       contentMarginTop="mt-0"
       endpoint={detailedEstimate}
       columns={BoqProjectsColumns}
-      routepoint={"viewnewinletdet"}
+      // routepoint={"viewnewinletdet"}
       exportModal={false}
       onSuccess={fetchDetailedEstimate}
       name={name}

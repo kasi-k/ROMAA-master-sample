@@ -7,6 +7,7 @@ import { API } from '../../../constant';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { useProject } from '../ProjectContext';
 
 const customerColumns = [
   { label: "Item Code", key: "item_name" },
@@ -18,18 +19,20 @@ const customerColumns = [
 ];
 
 const ZeroCost = () => {
-  const { tender_id } = useParams(); // 📌 Get tender_id from URL
+  const { tenderId } = useProject();
+
+  
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
-  const fetchBoqItems = async () => {
-    if (!tender_id) return;
+  const fetchZeroCost = async () => {
+    if (!tenderId) return;
     setLoading(true);
     try {
-      const res = await axios.get(`${API}/boq/items/${tender_id}`, {
+      const res = await axios.get(`${API}/boq/items/${tenderId}`, {
         params: {
           page: currentPage,
           limit: 10,
@@ -46,14 +49,14 @@ const ZeroCost = () => {
   };
 
   useEffect(() => {
-    fetchBoqItems();
-  }, [tender_id, currentPage]);
+    fetchZeroCost();
+  }, [tenderId, currentPage]);
 
   const handleDeleteZeroCostItem = async (item_code) => {
     try {
-      await axios.delete(`${API}/boq/removeitem/${tender_id}/${item_code}`);
+      await axios.delete(`${API}/boq/removeitem/${tenderId}/${item_code}`);
       toast.success("Item deleted successfully");
-      fetchBoqItems(); // refresh table
+      fetchZeroCost(); // refresh table
     } catch (error) {
       console.error(error);
       toast.error("Failed to delete BOQ item");
@@ -64,7 +67,7 @@ const ZeroCost = () => {
     <>
     <Table
       title="Zero Cost"
-      subtitle={`Tender: ${tender_id}`}
+      subtitle={`Tender: ${tenderId}`}
       endpoint={items}
       columns={customerColumns}
      // EditModal={true}       
@@ -74,10 +77,11 @@ const ZeroCost = () => {
       totalPages={totalPages}
       currentPage={currentPage}
       setCurrentPage={setCurrentPage}
-      onUpdated={fetchBoqItems}
-      onSuccess={fetchBoqItems}
+      onUpdated={fetchZeroCost}
+      onSuccess={fetchZeroCost}
       onDelete={handleDeleteZeroCostItem}
       idKey="item_code"
+  
     />
     
     </>

@@ -42,7 +42,7 @@ const NewInletAbs = ({ name }) => {
       UploadModal={UploadAbstract}
       endpoint={abstract}
       columns={NewInletAbsColumns}
-      routepoint={"viewnewinletabs"}
+      // routepoint={"viewnewinletabs"}
       onSuccess={fetchAbstract}
       exportModal={false}
       name={name}

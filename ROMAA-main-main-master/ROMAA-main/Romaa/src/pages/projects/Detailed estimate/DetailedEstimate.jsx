@@ -8,9 +8,11 @@ import GeneralAbstract from "./general abstract/GeneralAbstract";
 import BOQProject from "./BOQProjects/BOQProject";
 import NewInletDet from "./new inlet det/NewInletDet";
 import NewInletAbs from "./new inlet abs/NewInletAbs";
+import { useProject } from "../ProjectContext";
 
 const DetailedEstimate = () => {
-  const { tender_id } = useParams();
+  const { tenderId } = useProject();
+
   const [tabs, setTabs] = useState([
     { id: "1", label: "GS(General Abstract)", component: <GeneralAbstract /> },
     { id: "2", label: "Bill of Qty", component: <BOQProject /> },
@@ -23,8 +25,10 @@ const DetailedEstimate = () => {
   const fetchHeadings = async () => {
     try {
       const res = await axios.get(`${API}/detailedestimate/extractheadings`, {
-        params: { tender_id },
+        params: { tender_id: tenderId },
       });
+
+      console.log(res);
 
       if (res.data.status && res.data.data.length > 0) {
         const dynamicTabs = res.data.data.flatMap((item, index) => [
@@ -51,65 +55,15 @@ const DetailedEstimate = () => {
     }
   };
 
-  // ✅ Add new heading
-  const handleAddTabs = async (e) => {
-    e.preventDefault();
-    if (!name.trim()) return toast.error("Please enter a heading name");
-
-    setLoading(true);
-    try {
-      const res = await axios.post(
-        `${API}/detailedestimate/addheading?tender_id=${tender_id}`,
-        {
-          heading: name.toLowerCase().trim(),
-          abstract: [],
-          detailed: [],
-        }
-      );
-
-      if (res.data.status) {
-        toast.success("Heading added successfully");
-        setName("");
-        fetchHeadings(); // refresh tab list
-      } else {
-        toast.error(res.data.message || "Failed to add heading");
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Error adding heading");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    if (tender_id) fetchHeadings();
-  }, [tender_id]);
+    if (tenderId) fetchHeadings();
+  }, [tenderId]);
 
   const activeTabData = tabs.find((tab) => tab.id === activeTab);
 
   return (
     <div className="font-roboto-flex flex flex-col h-full p-4">
-      <Title text="Tender Detailed Estimate" />
-
-      {/* Add Heading */}
-      {/* <form onSubmit={handleAddTabs} className="flex gap-2 my-3 justify-end">
-        <input
-          type="text"
-          placeholder="Enter Name (e.g., Road, New Inlet)"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="border rounded px-3 py-2 text-sm w-60"
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className={`px-4 py-2 rounded-lg text-sm text-white ${
-            loading ? "bg-gray-400" : "bg-darkest-blue hover:bg-blue-800"
-          }`}
-        >
-          {loading ? "Adding..." : "Add Tabs"}
-        </button>
-      </form> */}
+      <Title title={`Detailed Estimate `} sub_title={`Tender : ${tenderId}`} />
 
       {/* Tabs */}
       <div className="flex flex-wrap gap-2 py-2.5">
