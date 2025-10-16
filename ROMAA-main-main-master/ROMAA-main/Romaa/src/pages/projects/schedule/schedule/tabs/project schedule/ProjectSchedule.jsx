@@ -1,100 +1,135 @@
-import React, { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { HiArrowsUpDown } from "react-icons/hi2";
-import { FiEye } from "react-icons/fi";
-import {projectScheduledata} from"../../../../../../components/Data"
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { API } from "../../../../../../constant";
+import { useProject } from "../../../../ProjectContext";
+import ScheduleTable from "../ScheduleTable";
+import { TbFileExport } from "react-icons/tb";
+import UploadModal from "../../UploadModal";
+
 const ProjectSchedule = () => {
-  const [expandedRow, setExpandedRow] = useState(null);
-const navigate = useNavigate();
-  const toggleRow = (index) => {
-    setExpandedRow(expandedRow === index ? null : index);
+  const { tenderId } = useProject();
+  const today = new Date();
+  const currentYear = today.getFullYear();
+
+  const [scheduleData, setScheduleData] = useState([]);
+  const [upload, setUpload] = useState(false); // Upload modal state
+
+  // Filters
+  const [selectedYear, setSelectedYear] = useState(""); // empty initially
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  // Example: years from 2020 to current year
+  const years = Array.from({ length: currentYear - 2019 }, (_, i) => 2020 + i);
+
+  // Fetch data function
+  const fetchData = async (filters = {}) => {
+    if (!tenderId) return;
+
+    try {
+      const params = { tenderId };
+
+      // If date range is selected
+      if (filters.startDate && filters.endDate) {
+        params.startDate = filters.startDate;
+        params.endDate = filters.endDate;
+      } else {
+        // No date range, pass year (selected or default to current year)
+        params.year = filters.year || currentYear;
+      }
+
+      const res = await axios.get(`${API}/schedule/getschedule`, { params });
+      setScheduleData(Array.isArray(res.data.data) ? res.data.data : []);
+    } catch (err) {
+      console.error(err);
+      setScheduleData([]);
+    }
+  };
+
+  // Initial load
+  useEffect(() => {
+    fetchData(); // API will get current year by default
+  }, [tenderId]);
+
+  // Handlers
+  const handleYearChange = (year) => {
+    setSelectedYear(year);
+    setStartDate("");
+    setEndDate("");
+    fetchData({ year });
+  };
+
+  const handleDateChange = (start, end) => {
+    setStartDate(start);
+    setEndDate(end);
+    setSelectedYear(""); // reset year when using date range
+    if (start && end) fetchData({ startDate: start, endDate: end });
   };
 
   return (
-    <div className="font-roboto-flex flex flex-col h-full">
-      <div className="mt-4 overflow-y-auto no-scrollbar">
-        <div className="overflow-auto no-scrollbar">
-          <table className="w-full whitespace-nowrap">
-            <thead>
-              <tr className="font-semibold text-sm bg-white border-b-4 border-light-blue">
-                <th className="p-3.5 rounded-l-lg">S.no</th>
-                {["Description", "Quantity", "Units", "Start Date", "Days Remaining"].map((heading) => (
-                  <th key={heading} className="p-3">
-                    <h1 className="flex items-center justify-center gap-2">
-                      {heading} <HiArrowsUpDown size={18} />
-                    </h1>
-                  </th>
-                ))}
-                <th className="pr-2 rounded-r-lg">Action</th>
-              </tr>
-            </thead>
+    <div>
+      {/* Upload Button */}
+      <p className="cursor-pointer flex justify-end mb-2">
+        <span
+          onClick={() => setUpload(true)}
+          className="flex items-center dark:bg-layout-dark bg-white px-2 py-2 rounded-md text-sm"
+        >
+          <TbFileExport size={22} />
+          <span className="px-1">Upload</span>
+        </span>
+      </p>
 
-            <tbody className="text-greyish text-sm font-light">
-              {projectScheduledata?.length > 0 &&
-                projectScheduledata.map((data, index) => (
-                  <React.Fragment key={index}>
-                    <tr className="border-b-[3px] bg-white border-light-blue text-center">
-                      <td className="rounded-l-lg py-3">{index + 1}</td>
-                      <td>{data.description}</td>
-                      <td>{data.quantity}</td>
-                      <td>{data.unit}</td>
-                      <td>{data.startDate}</td>
-                      <td>{data.daysRemaining}</td>
+      {/* Horizontal strip style header */}
+      <div className="w-full bg-white dark:bg-layout-dark border-b-2 dark:border-border-dark-grey border-gray-100 rounded-t-lg px-4 py-3 flex items-center gap-4 overflow-x-auto no-scrollbar">
+        {/* Year Dropdown */}
+        <select
+          value={selectedYear}
+          onChange={(e) => handleYearChange(parseInt(e.target.value))}
+          className="bg-layout-dark rounded px-2 py-1 text-sm"
+        >
+          <option value="">Select Year</option>
+          {years.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
 
-                      <td className="rounded-r-lg flex items-center justify-center gap-2 mt-2 px-4">
-                        <p className="cursor-pointer bg-green-200 rounded-sm p-1.5 text-green-600"
-                         onClick={() =>
-                              navigate(
-                                "/projects/projectschedule/viewprojectschedule",
-                                { state: { item: data } }
-                              )
-                            }>
-                          <FiEye />
-                        </p>
-                        <p
-                          onClick={() => toggleRow(index)}
-                          className="cursor-pointer bg-blue-200 rounded p-0.5 text-blue-600"
-                        >
-                          {expandedRow === index ? <ChevronUp /> : <ChevronDown />}
-                        </p>
-                      </td>
-                    </tr>
+        {/* Start Date */}
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => handleDateChange(e.target.value, endDate)}
+          className="border border-border-dark-grey rounded px-2 py-1 text-sm"
+        />
 
-                    {expandedRow === index && (
-                      <tr>
-                        <td colSpan="7" className="px-6 py-1">
-                          <div className="bg-blue-50 px-4 py-2 rounded-md">
-                            <table className="w-full text-sm table-fixed">
-                              <tbody>
-                                {data.details?.map((detail, i) => (
-                                  <tr
-                                    key={i}
-                                    className="bg-gray-200 border-b border-white text-center"
-                                  >
-                                    <td className="text-start pl-4 py-1 font-medium whitespace-nowrap">
-                                      {String.fromCharCode(97 + i)}) {detail.contractor}
-                                    </td>
-                                    <td></td>
-                                    <td className="py-1">{detail.quantity}</td>
-                                    <td className="py-1">{detail.unit}</td>
-                                    <td className="py-1">{detail.startDate}</td>
-                                    <td className="py-1">{detail.daysRemaining}</td>
-                                    <td className="py-1"></td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                ))}
-            </tbody>
-          </table>
-        </div>
+        {/* End Date */}
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => handleDateChange(startDate, e.target.value)}
+          className="border border-border-dark-grey rounded px-2 py-1 text-sm"
+        />
+
+        {/* Reset Button */}
+        <button
+          onClick={() => {
+            setSelectedYear("");
+            setStartDate("");
+            setEndDate("");
+            fetchData(); // current year by default
+          }}
+          className="bg-darkest-blue px-3 py-1 rounded text-sm"
+        >
+          Reset
+        </button>
       </div>
+
+      {/* Schedule Table */}
+      <ScheduleTable scheduleData={scheduleData} />
+
+      {/* Upload Modal */}
+      {upload && <UploadModal onclose={() => setUpload(false)} />}
     </div>
   );
 };

@@ -1,61 +1,56 @@
-
 import { useSearchParams } from "react-router-dom";
-import Title from "../../../../components/Title"
+import Title from "../../../../components/Title";
 import DailyProjects from "./tabs/daily/DailyProjects";
 import WeeklyProjects from "./tabs/weekly/WeeklyProjects";
 import MonthlyProjects from "./tabs/monthly/Monthly";
 import ProjectSchedule from "./tabs/project schedule/ProjectSchedule";
 import ManPowerHistogram from "./tabs/Man Power Histogram/ManPowerHistogram";
 import MachinerySchedule from "./tabs/machinery Schedule/MachinerySchedule";
-
-
+import ScheduleTable from "./tabs/ScheduleTable";
 
 const tabs = [
   {
     id: "1",
-    label: "Daily",
-    component:<DailyProjects/>,
-    
+    label: "Project Schedule",
+    component: <ProjectSchedule  />,
   },
   {
     id: "2",
-    label: "Weekly",
-    component:<WeeklyProjects/>,
-    
+    label: "Daily",
+    component: <DailyProjects />,
   },
+
   {
     id: "3",
-    label: "Monthly",
-    component:<MonthlyProjects/>,
-    
+    label: "Weekly",
+    component: <WeeklyProjects />,
   },
-    {
+  {
     id: "4",
-    label: "Project Schedule",
-    component:<ProjectSchedule/>,
-    
+    label: "Monthly",
+    component: <MonthlyProjects />,
   },
-      {
+
+  {
     id: "5",
     label: "Man Power Histogram",
-    component:<ManPowerHistogram/>,
+    component: <ManPowerHistogram />,
   },
-        {
+  {
     id: "6",
     label: "Machinery Schedule",
-    component:<MachinerySchedule/>,
+    component: <MachinerySchedule />,
   },
- 
 ];
 
 const ScheduleProjects = () => {
-const [searchParams, setSearchParams] = useSearchParams();
-const defaultTab = tabs[0].id;
-const activeTab = searchParams.get("tab") || defaultTab;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const defaultTab = tabs[0].id;
+  const activeTab = searchParams.get("tab") || defaultTab;
 
-const handleTabChange = (id) => {
-  setSearchParams({ tab: id });
-};
+  const handleTabChange = (id) => {
+    setSearchParams({ tab: id });
+  };
 
   const activeTabData = tabs.find((tab) => tab.id === activeTab);
 

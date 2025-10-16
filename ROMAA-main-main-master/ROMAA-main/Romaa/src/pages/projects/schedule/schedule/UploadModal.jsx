@@ -6,8 +6,11 @@ import { useProject } from "../../ProjectContext";
 import { toast } from "react-toastify";
 
 const sampleCSv = `MajorHeading,CustomWorks,SubWorkName,SubWorkUnit,SubWorkQty,SubWorkStartDate,SubWorkEndDate,Description,Unit,Qty,ExecutedQty,BalanceQty,StartDate,EndDate,Duration,Delay,Status,DaysRemaining,Notes
-A - Preliminary and Common Works,Soil Cutting,Soil Cutting,Cum,10400,2025-09-22,2025-10-11,rmt,7.2,,,,2025-10-17,2025-10-20,,,,
-A - Preliminary and Common Works,Initial Embankment Formation,Initial Embankment Formation,Cum,10400,2025-09-24,2025-10-13,,,,,,,,,,`;
+A - Preliminary and Common Works,Soil Cutting,Soil Cutting,Cum,10400,2025-09-22,2025-10-11,,,,,,,,,,,,
+A - Preliminary and Common Works,Initial Embankment Formation,Initial Embankment,Cum,10400,2025-09-24,2025-10-13,,,,,,,,,,,,
+B - LHS Side - High Portion - Shed Side,D/S Cut off Wall,Earthwork +49.2,Rmt,125,,,Ch 0 - 7.2,Rmt,7.2,0,7.2,2025-10-06,2025-10-06,1,0,pending,11,
+B - LHS Side - High Portion - Shed Side,D/S Cut off Wall,Earthwork +49.2,Rmt,125,,,Ch 7.2 - 30,Rmt,22.8,0,22.8,2025-10-07,2025-10-08,2,0,pending,13,
+B - LHS Side - High Portion - Shed Side,PCC - Top +49.3,PCC Segment,Rmt,125,,,Ch 0 - 7.2,Rmt,7.2,0,7.2,2025-10-07,2025-10-07,1,0,pending,12,`;
 
 const UploadModal = ({ onclose, onSuccess }) => {
   const [files, setFiles] = useState([]);
@@ -117,6 +120,17 @@ const UploadModal = ({ onclose, onSuccess }) => {
                 type="date"
                 name="workOrderDate"
                 value={formDataValues.workOrderDate}
+                onChange={handleFieldChange}
+                required
+                className="border rounded px-2 py-1 w-full"
+              />
+            </label>
+            <label>
+              Agreement Date
+              <input
+                type="date"
+                name="aggDate"
+                value={formDataValues.aggDate}
                 onChange={handleFieldChange}
                 required
                 className="border rounded px-2 py-1 w-full"
